@@ -78,8 +78,7 @@
 </head>
 <body>
 
-<div id="loadingToast" class="loading-toast"><span>🔄</span><span id="toastMsg">Saving...</span></div>
-
+<div id="loadingToast" class="loading-toast"><span>🔄</span><span id="toastMsg">Loading...</span></div>
 <canvas id="bgCanvas"></canvas>
 
 <nav>
@@ -155,16 +154,17 @@
 </footer>
 
 <script>
-// ==================== GITHUB CONFIGURATION ====================
-// 🔴🔴🔴 IMPORTANT: TERA TOKEN DAL DIYA HAI 🔴🔴🔴
+// ==================== GITHUB CONFIGURATION - TOKEN DALO YAHAN ====================
+// 🔴🔴🔴 APNA NAYA TOKEN YAHAN PASTE KARO 🔴🔴🔴
+const GITHUB_TOKEN = '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';
 const GITHUB_USER = 'ayaanpirjade';
 const GITHUB_REPO = 'my-portfolio';
 const GITHUB_FILE_PATH = 'projects-data.json';
 const GITHUB_BRANCH = 'main';
 
-// Raw URL for reading (public access)
+// Public URL for reading (works without token)
 const DATA_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${GITHUB_FILE_PATH}`;
-// API URL for updating
+// API URL for writing (needs token)
 const API_URL = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`;
 
 // ==================== SECURE CREDENTIALS FOR ADMIN LOGIN ====================
@@ -176,70 +176,48 @@ let servicesData = [];
 let projectsData = [];
 let currentFileSha = null;
 
-// ==================== SHOW TOAST NOTIFICATION ====================
 function showToast(msg, isError = false) {
     const toast = document.getElementById('loadingToast');
     const toastMsg = document.getElementById('toastMsg');
     toastMsg.innerText = msg;
     toast.style.display = 'flex';
     toast.style.borderColor = isError ? '#ff4d4d' : '#00e5ff';
-    setTimeout(() => {
-        toast.style.display = 'none';
-        toast.style.borderColor = '#00e5ff';
-    }, 3000);
+    setTimeout(() => { toast.style.display = 'none'; }, 4000);
 }
 
-// ==================== LOAD DATA FROM GITHUB ====================
-async function loadDataFromGitHub() {
-    try {
-        console.log("Loading data from GitHub...");
-        showToast("Loading data from GitHub...");
-        
-        const response = await fetch(DATA_URL);
-        if (!response.ok) throw new Error('Failed to load data');
-        const data = await response.json();
-        
-        skillsData = data.skills || [];
-        servicesData = data.services || [];
-        projectsData = data.projects || [];
-        
-        console.log("Data loaded successfully");
-        showToast("Data loaded successfully!");
-        render();
-        
-        await getFileSha();
-        return true;
-    } catch (error) {
-        console.error("Error loading from GitHub:", error);
-        showToast("Error loading data, using local cache", true);
-        loadFromLocalStorage();
-        return false;
-    }
-}
-
+// Get current file SHA from GitHub
 async function getFileSha() {
     try {
         const response = await fetch(API_URL, {
-            headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
+            headers: { 
+                'Authorization': `token ${GITHUB_TOKEN}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
         });
         if (response.ok) {
             const data = await response.json();
             currentFileSha = data.sha;
             console.log("File SHA obtained:", currentFileSha);
+            return true;
+        } else {
+            console.error("Failed to get SHA:", response.status);
+            return false;
         }
     } catch (error) {
         console.error("Error getting file SHA:", error);
+        return false;
     }
 }
 
+// Save data to GitHub
 async function saveToGitHub() {
-    if (!GITHUB_TOKEN || GITHUB_TOKEN === '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') {
-        showToast("⚠️ GitHub token not configured! Changes saved only locally.", true);
+    if (!GITHUB_TOKEN || GITHUB_TOKEN === 'ghp_YOUR_NEW_TOKEN_HERE') {
+        showToast("❌ GitHub token not configured! Save to local only.", true);
         saveToLocalStorage();
         return false;
     }
     
-    showToast("Saving to GitHub...");
+    showToast("💾 Saving to GitHub...");
     
     const dataToSave = {
         skills: skillsData,
@@ -248,9 +226,15 @@ async function saveToGitHub() {
         lastUpdated: new Date().toISOString()
     };
     
+    // Convert to base64
     const content = btoa(unescape(encodeURIComponent(JSON.stringify(dataToSave, null, 2))));
     
     try {
+        // First get current SHA if we don't have it
+        if (!currentFileSha) {
+            await getFileSha();
+        }
+        
         const response = await fetch(API_URL, {
             method: 'PUT',
             headers: {
@@ -274,12 +258,35 @@ async function saveToGitHub() {
             return true;
         } else {
             const error = await response.json();
-            throw new Error(error.message || "Failed to save");
+            console.error("GitHub API error:", error);
+            showToast(`❌ GitHub error: ${error.message || "Unknown error"}`, true);
+            saveToLocalStorage();
+            return false;
         }
     } catch (error) {
         console.error("Error saving to GitHub:", error);
-        showToast("❌ Failed to save to GitHub! Check token.", true);
+        showToast("❌ Network error! Saved to local only.", true);
         saveToLocalStorage();
+        return false;
+    }
+}
+
+async function loadDataFromGitHub() {
+    try {
+        showToast("Loading data from GitHub...");
+        const response = await fetch(DATA_URL);
+        if (!response.ok) throw new Error('Failed to load');
+        const data = await response.json();
+        skillsData = data.skills || [];
+        servicesData = data.services || [];
+        projectsData = data.projects || [];
+        showToast("Data loaded from GitHub!");
+        render();
+        await getFileSha(); // Get SHA for future updates
+        return true;
+    } catch (error) {
+        showToast("Error loading, using local cache", true);
+        loadFromLocalStorage();
         return false;
     }
 }
@@ -314,15 +321,13 @@ function loadFromLocalStorage() {
     }
     if(projectsData.length === 0) {
         projectsData = [
-            { id: 1, title: "NCERTPadhlo", desc: "Free NCERT Solutions for Class 6-12.", tech: ["HTML", "CSS", "JS"], github: "https://github.com/ayaanpirjade/NCERTPadhlo", live: "https://ayaanpirjade.github.io/NCERTPadhlo/", icon: "📚" },
-            { id: 2, title: "Instagram Automation Suite", desc: "Automated engagement tool.", tech: ["Python", "Selenium"], github: "https://github.com/ayaanpirjade", live: "#", icon: "📸" }
+            { id: 1, title: "NCERTPadhlo", desc: "Free NCERT Solutions for Class 6-12.", tech: ["HTML", "CSS", "JS"], github: "https://github.com/ayaanpirjade/NCERTPadhlo", live: "https://ayaanpirjade.github.io/NCERTPadhlo/", icon: "📚" }
         ];
     }
     render();
 }
 
 function render() {
-    console.log("Rendering website...");
     const skillsContainer = document.getElementById('skillsContainer');
     if(skillsContainer) {
         skillsContainer.innerHTML = skillsData.map((s, index) => `<div class="skill-item" style="animation-delay: ${index * 0.03}s"><span class="skill-hash">#</span><span class="skill-name">${s}</span></div>`).join('');
@@ -422,41 +427,25 @@ function showPanel() {
     function refreshProjectList() {
         let listDiv = document.getElementById('projectList');
         listDiv.innerHTML = projectsData.map((p, i) => `<div style="background:#1a1f2a;padding:0.5rem;margin:0.3rem 0;border-radius:8px"><div style="display:flex;justify-content:space-between"><span><strong>${p.title}</strong><br><small>${p.desc.substring(0,50)}</small></span><div><button class="editProj" data-idx="${i}" style="background:#00e5ff;border:none;padding:0.2rem 0.6rem;border-radius:6px;margin-right:0.3rem">✏️ Edit</button><button class="delProj" data-idx="${i}" style="background:#ff4d4d;border:none;padding:0.2rem 0.6rem;border-radius:6px">🗑️ Del</button></div></div></div>`).join('');
-        document.querySelectorAll('.delProj').forEach(btn => { btn.onclick = async () => { if(confirm('Delete this project?')) { projectsData.splice(parseInt(btn.dataset.idx),1); refreshProjectList(); await saveToGitHub(); render(); } }; });
+        document.querySelectorAll('.delProj').forEach(btn => { btn.onclick = async () => { if(confirm('Delete this project? This will update GitHub for all visitors.')) { projectsData.splice(parseInt(btn.dataset.idx),1); refreshProjectList(); await saveToGitHub(); render(); } }; });
         document.querySelectorAll('.editProj').forEach(btn => { btn.onclick = async () => { let i=parseInt(btn.dataset.idx); let p=projectsData[i]; p.title=prompt('Title',p.title)||p.title; p.desc=prompt('Desc',p.desc)||p.desc; p.tech=prompt('Tech (comma)',p.tech.join(',')).split(',').map(t=>t.trim()); p.github=prompt('GitHub',p.github)||p.github; p.live=prompt('Live Link',p.live)||p.live; refreshProjectList(); await saveToGitHub(); render(); }; });
     }
-    
     function refreshSkillsEdit() {
         let skillDiv = document.getElementById('skillList');
         skillDiv.innerHTML = skillsData.map((s,i) => `<span style="background:#1a1f2a;padding:0.3rem 0.8rem;margin:0.2rem;display:inline-block;border-radius:20px">${s} <button class="delSkill" data-idx="${i}" style="background:none;border:none;color:#ff4d4d">✖</button></span>`).join('');
         document.querySelectorAll('.delSkill').forEach(btn => { btn.onclick = async () => { skillsData.splice(parseInt(btn.dataset.idx),1); refreshSkillsEdit(); await saveToGitHub(); render(); }; });
     }
-    
     function refreshServicesEdit() {
         let servicesDiv = document.getElementById('servicesEditArea');
         servicesDiv.innerHTML = servicesData.map((sv,i) => `<div style="background:#1a1f2a;padding:0.5rem;margin:0.3rem 0;border-radius:8px"><input id="sv_icon_${i}" value="${sv.icon}" style="width:60px"><input id="sv_title_${i}" value="${sv.title}"><textarea id="sv_desc_${i}">${sv.desc}</textarea><button class="delService" data-idx="${i}" style="background:#ff4d4d;border:none;padding:0.2rem 0.6rem;border-radius:6px">Delete</button></div>`).join('');
         document.querySelectorAll('.delService').forEach(btn => { btn.onclick = async () => { servicesData.splice(parseInt(btn.dataset.idx),1); refreshServicesEdit(); await saveToGitHub(); render(); }; });
     }
-    
-    refreshProjectList();
-    refreshSkillsEdit();
-    refreshServicesEdit();
-    
-    document.getElementById('addProjBtn').onclick = async () => {
-        let newProj = { id:Date.now(), title:document.getElementById('pTitle').value.trim()||"New", desc:document.getElementById('pDesc').value.trim()||"Desc", tech:document.getElementById('pTech').value.split(',').map(t=>t.trim()), github:document.getElementById('pGithub').value.trim()||"#", live:document.getElementById('pLive').value.trim()||"#", icon:document.getElementById('pIcon').value.trim()||"🚀" };
-        projectsData.push(newProj); refreshProjectList(); await saveToGitHub(); render();
-        document.getElementById('pTitle').value=''; document.getElementById('pDesc').value=''; document.getElementById('pTech').value=''; document.getElementById('pGithub').value=''; document.getElementById('pLive').value=''; document.getElementById('pIcon').value='';
-    };
-    
-    document.getElementById('addSkillBtn').onclick = async () => { let ns=document.getElementById('newSkill').value.trim(); if(ns){ skillsData.push(ns); refreshSkillsEdit(); await saveToGitHub(); render(); document.getElementById('newSkill').value=''; } };
-    
-    document.getElementById('saveAllBtn').onclick = async () => {
-        for(let i=0;i<servicesData.length;i++){ let ic=document.getElementById(`sv_icon_${i}`)?.value; let ti=document.getElementById(`sv_title_${i}`)?.value; let de=document.getElementById(`sv_desc_${i}`)?.value; if(ic) servicesData[i].icon=ic; if(ti) servicesData[i].title=ti; if(de!==undefined) servicesData[i].desc=de; }
-        await saveToGitHub(); render();
-    };
+    refreshProjectList(); refreshSkillsEdit(); refreshServicesEdit();
+    document.getElementById('addProjBtn').onclick = async () => { let newProj = { id:Date.now(), title:document.getElementById('pTitle').value.trim()||"New", desc:document.getElementById('pDesc').value.trim()||"Desc", tech:document.getElementById('pTech').value.split(',').map(t=>t.trim()), github:document.getElementById('pGithub').value.trim()||"#", live:document.getElementById('pLive').value.trim()||"#", icon:document.getElementById('pIcon').value.trim()||"🚀" }; projectsData.push(newProj); refreshProjectList(); await saveToGitHub(); render(); };
+    document.getElementById('addSkillBtn').onclick = async () => { let ns=document.getElementById('newSkill').value.trim(); if(ns){ skillsData.push(ns); refreshSkillsEdit(); await saveToGitHub(); render(); } };
+    document.getElementById('saveAllBtn').onclick = async () => { for(let i=0;i<servicesData.length;i++){ let ic=document.getElementById(`sv_icon_${i}`)?.value; let ti=document.getElementById(`sv_title_${i}`)?.value; let de=document.getElementById(`sv_desc_${i}`)?.value; if(ic) servicesData[i].icon=ic; if(ti) servicesData[i].title=ti; if(de!==undefined) servicesData[i].desc=de; } await saveToGitHub(); render(); };
     document.getElementById('closeModal').onclick = () => modal.remove();
 }
-
 function checkAdminHash() { if (window.location.hash === '#admin') { openAdmin(); history.pushState(null,null,window.location.pathname); } }
 window.addEventListener('hashchange', checkAdminHash);
 checkAdminHash();
