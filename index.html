@@ -220,16 +220,6 @@
             color: var(--text-sec);
             font-size: 0.75rem;
         }
-        .secret-hint {
-            position: fixed;
-            bottom: 10px;
-            right: 12px;
-            font-size: 9px;
-            color: rgba(255,255,255,0.04);
-            z-index: 999;
-            font-family: monospace;
-            pointer-events: none;
-        }
         @media (max-width: 768px) {
             .hero-grid { grid-template-columns: 1fr; text-align: center; }
             .hero-img { width: 180px; height: 180px; margin: 0 auto; }
@@ -316,15 +306,12 @@
     </div>
 </footer>
 
-<div class="secret-hint">// type 'admin' anywhere</div>
-
 <script>
-// ==================== SECURE CREDENTIALS (HASHED) ====================
+// ==================== SECURE CREDENTIALS ====================
 // Username: iowncodz | Password: AYAAN@#7866
-// Stored as hash to prevent direct inspection
 const ADMIN_CRED = {
-    user: btoa('iowncodz'),           // aW93bmNvZHo=
-    pass: btoa('AYAAN@#7866')         // QVlBQU5AIzc4NjY=
+    user: btoa('iowncodz'),
+    pass: btoa('AYAAN@#7866')
 };
 
 // ==================== DATA ====================
@@ -366,9 +353,7 @@ function loadData() {
 }
 
 function render() {
-    // Skills
     document.getElementById('skillsContainer').innerHTML = skillsData.map(s => `<span class="skill-tag">#${s}</span>`).join('');
-    // Services
     document.getElementById('servicesContainer').innerHTML = servicesData.map(s => `
         <div class="card">
             <div class="service-icon">${s.icon}</div>
@@ -376,7 +361,6 @@ function render() {
             <div class="service-desc">${s.desc}</div>
         </div>
     `).join('');
-    // Projects
     document.getElementById('projectsContainer').innerHTML = projectsData.map(p => `
         <div class="card">
             <div class="project-img">${p.icon || '🚀'}</div>
@@ -412,8 +396,7 @@ for (let i = 0; i < 100; i++) {
         r: Math.random() * 2 + 0.5,
         vx: (Math.random() - 0.5) * 0.6,
         vy: (Math.random() - 0.5) * 0.6,
-        o: Math.random() * 0.4 + 0.1,
-        color: Math.random() > 0.7 ? '#00e5ff' : '#b980ea'
+        o: Math.random() * 0.4 + 0.1
     });
 }
 
@@ -423,7 +406,6 @@ document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.c
 function animateParticles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let p of particles) {
-        // Mouse interaction
         let dx = mouseX - p.x, dy = mouseY - p.y;
         let dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < 150) { p.x -= dx * 0.005; p.y -= dy * 0.005; }
@@ -444,19 +426,12 @@ function animateParticles() {
 }
 animateParticles();
 
-// ==================== ADMIN PANEL (SECURE) ====================
+// ==================== ADMIN PANEL - ACCESS VIA #admin ====================
 let adminLogged = false;
-let keyBuffer = '';
 
 function verifyCredentials(user, pass) {
     return btoa(user) === ADMIN_CRED.user && btoa(pass) === ADMIN_CRED.pass;
 }
-
-document.addEventListener('keydown', (e) => {
-    keyBuffer += e.key;
-    keyBuffer = keyBuffer.slice(-5);
-    if (keyBuffer.toLowerCase() === 'admin') openAdmin();
-});
 
 function openAdmin() {
     if (adminLogged) showPanel();
@@ -488,7 +463,6 @@ function showLogin() {
             alert('⛔ Access Denied. Invalid credentials.');
         }
     };
-    // Enter key support
     document.getElementById('adminPass').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') document.getElementById('adminLoginBtn').click();
     });
@@ -615,7 +589,6 @@ function showPanel() {
     };
     
     document.getElementById('saveAllBtn').onclick = () => {
-        // Update services from inputs
         for(let i = 0; i < servicesData.length; i++) {
             let newIcon = document.getElementById(`sv_icon_${i}`)?.value;
             let newTitle = document.getElementById(`sv_title_${i}`)?.value;
@@ -631,6 +604,20 @@ function showPanel() {
     
     document.getElementById('closeModal').onclick = () => modal.remove();
 }
+
+// Check for #admin in URL
+function checkAdminHash() {
+    if (window.location.hash === '#admin') {
+        openAdmin();
+        // Remove hash to keep URL clean but panel stays open
+        history.pushState(null, null, window.location.pathname);
+    }
+}
+
+// Watch for hash changes
+window.addEventListener('hashchange', checkAdminHash);
+// Initial check
+checkAdminHash();
 
 // Smooth scroll
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
