@@ -6,259 +6,71 @@
     <title>Ayaan Pirjade | Automate. Secure. Innovate.</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --bg: #0a0c0f;
-            --card: #111315;
-            --border: rgba(255,255,255,0.06);
-            --text: #ededee;
-            --text-sec: #8a8f98;
-            --cyan: #00e5ff;
-            --purple: #b980ea;
-            --green: #00ff88;
-            --red: #ff4d4d;
+            --bg: #0a0c0f; --card: #111315; --border: rgba(255,255,255,0.06);
+            --text: #ededee; --text-sec: #8a8f98; --cyan: #00e5ff;
+            --purple: #b980ea; --green: #00ff88; --red: #ff4d4d;
         }
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            line-height: 1.5;
-            overflow-x: hidden;
-        }
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-            opacity: 0.45;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-            position: relative;
-            z-index: 2;
-        }
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 1rem 2rem;
-            background: rgba(10,12,15,0.85);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
-        }
-        .nav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-family: 'Space Grotesk', monospace;
-            font-size: 1.35rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--cyan), var(--purple));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -0.5px;
-        }
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-        .nav-links a {
-            color: var(--text-sec);
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; line-height: 1.5; overflow-x: hidden; }
+        canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0.45; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 2; }
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1rem 2rem; background: rgba(10,12,15,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+        .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Space Grotesk', monospace; font-size: 1.35rem; font-weight: 700; background: linear-gradient(135deg, var(--cyan), var(--purple)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a { color: var(--text-sec); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
         .nav-links a:hover { color: var(--cyan); }
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            padding: 6rem 0 3rem;
-        }
-        .hero-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 3rem;
-            align-items: center;
-        }
-        .hero-img {
-            width: 280px;
-            height: 280px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--cyan);
-            box-shadow: 0 0 40px rgba(0,229,255,0.25);
-            transition: transform 0.3s;
-        }
+        .hero { min-height: 100vh; display: flex; align-items: center; padding: 6rem 0 3rem; }
+        .hero-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 3rem; align-items: center; }
+        .hero-img { width: 280px; height: 280px; border-radius: 50%; object-fit: cover; border: 3px solid var(--cyan); box-shadow: 0 0 40px rgba(0,229,255,0.25); transition: transform 0.3s; }
         .hero-img:hover { transform: scale(1.02); }
-        .hero-badge {
-            font-size: 0.7rem;
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            color: var(--cyan);
-            margin-bottom: 1rem;
-        }
-        .hero h1 {
-            font-size: clamp(2rem, 5vw, 3.2rem);
-            font-family: 'Space Grotesk', monospace;
-            margin-bottom: 1rem;
-            line-height: 1.2;
-        }
-        .gradient {
-            background: linear-gradient(135deg, var(--cyan), var(--green), var(--purple));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: shift 4s ease infinite;
-            background-size: 200% 200%;
-        }
+        .hero-badge { font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--cyan); margin-bottom: 1rem; }
+        .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-family: 'Space Grotesk', monospace; margin-bottom: 1rem; line-height: 1.2; }
+        .gradient { background: linear-gradient(135deg, var(--cyan), var(--green), var(--purple)); -webkit-background-clip: text; background-clip: text; color: transparent; animation: shift 4s ease infinite; background-size: 200% 200%; }
         @keyframes shift { 0%,100%{background-position:0% 50%;} 50%{background-position:100% 50%;} }
-        .hero-desc {
-            color: var(--text-sec);
-            margin: 1.5rem 0;
-            line-height: 1.7;
-            font-size: 0.95rem;
-        }
+        .hero-desc { color: var(--text-sec); margin: 1.5rem 0; line-height: 1.7; font-size: 0.95rem; }
         .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; }
-        .btn {
-            padding: 0.7rem 1.5rem;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s;
-            cursor: pointer;
-            border: none;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, var(--cyan), var(--purple));
-            color: #0a0c0f;
-        }
+        .btn { padding: 0.7rem 1.5rem; border-radius: 40px; font-weight: 600; font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s; cursor: pointer; border: none; }
+        .btn-primary { background: linear-gradient(135deg, var(--cyan), var(--purple)); color: #0a0c0f; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 20px rgba(0,229,255,0.3); }
-        .btn-outline {
-            border: 1px solid var(--border);
-            background: transparent;
-            color: var(--text);
-        }
+        .btn-outline { border: 1px solid var(--border); background: transparent; color: var(--text); }
         .btn-outline:hover { border-color: var(--cyan); color: var(--cyan); }
         .section { padding: 4rem 0; }
-        .section-title {
-            font-size: 1.8rem;
-            font-family: 'Space Grotesk', monospace;
-            margin-bottom: 2rem;
-        }
-        .skills-grid, .services-grid, .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 1.5rem;
-            transition: all 0.3s;
-        }
-        .card:hover {
-            border-color: rgba(0,229,255,0.3);
-            transform: translateY(-4px);
-        }
-        .skill-tag {
-            display: inline-block;
-            padding: 0.35rem 1rem;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border);
-            border-radius: 30px;
-            font-size: 0.75rem;
-            margin: 0.2rem;
-            transition: all 0.2s;
-        }
-        .skill-tag:hover { border-color: var(--cyan); color: var(--cyan); }
+        .section-title { font-size: 1.8rem; font-family: 'Space Grotesk', monospace; margin-bottom: 2rem; text-align: center; }
+        .section-title .slash { color: var(--cyan); }
+        .skills-wrapper { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 1rem; }
+        .skill-item { display: inline-block; padding: 0.8rem 1.5rem; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 60px; font-size: 1rem; font-weight: 500; color: var(--text-sec); transition: all 0.3s; cursor: default; position: relative; overflow: hidden; }
+        .skill-item::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(0,229,255,0.1), transparent); transition: left 0.5s ease; }
+        .skill-item:hover { border-color: var(--cyan); color: var(--cyan); transform: translateY(-3px) scale(1.02); box-shadow: 0 0 20px rgba(0,229,255,0.2); }
+        .skill-item:hover::before { left: 100%; }
+        .skill-hash { color: var(--cyan); font-weight: 600; margin-right: 6px; }
+        @keyframes skillFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .skill-item { opacity: 0; animation: skillFadeIn 0.4s ease forwards; }
+        .services-grid, .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 1.5rem; transition: all 0.3s; }
+        .card:hover { border-color: rgba(0,229,255,0.3); transform: translateY(-4px); }
         .service-icon { font-size: 2rem; margin-bottom: 1rem; }
         .service-title { font-weight: 700; margin-bottom: 0.5rem; }
         .service-desc { font-size: 0.8rem; color: var(--text-sec); line-height: 1.5; }
-        .project-img {
-            height: 140px;
-            background: linear-gradient(135deg, #1a1f2a, #0f1115);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-        }
+        .project-img { height: 140px; background: linear-gradient(135deg, #1a1f2a, #0f1115); display: flex; align-items: center; justify-content: center; font-size: 3rem; border-radius: 12px; margin-bottom: 1rem; }
         .project-title { font-weight: 700; margin-bottom: 0.3rem; font-size: 1.2rem; }
         .project-tech { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.7rem 0; }
         .project-tech span { font-size: 0.65rem; padding: 0.2rem 0.6rem; background: rgba(255,255,255,0.05); border-radius: 12px; }
-        .project-buttons {
-            display: flex;
-            gap: 0.8rem;
-            margin-top: 1rem;
-            flex-wrap: wrap;
-        }
-        .project-btn {
-            padding: 0.4rem 1rem;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-        .project-btn-github {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border);
-            color: var(--text-sec);
-        }
-        .project-btn-github:hover {
-            border-color: var(--cyan);
-            color: var(--cyan);
-        }
-        .project-btn-live {
-            background: linear-gradient(135deg, var(--cyan), var(--purple));
-            border: none;
-            color: #0a0c0f;
-        }
-        .project-btn-live:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 15px rgba(0,229,255,0.3);
-        }
-        footer {
-            border-top: 1px solid var(--border);
-            padding: 2rem;
-            text-align: center;
-            color: var(--text-sec);
-            font-size: 0.75rem;
-        }
+        .project-buttons { display: flex; gap: 0.8rem; margin-top: 1rem; flex-wrap: wrap; }
+        .project-btn { padding: 0.4rem 1rem; border-radius: 30px; font-size: 0.7rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem; transition: all 0.2s; cursor: pointer; }
+        .project-btn-github { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-sec); }
+        .project-btn-github:hover { border-color: var(--cyan); color: var(--cyan); }
+        .project-btn-live { background: linear-gradient(135deg, var(--cyan), var(--purple)); border: none; color: #0a0c0f; }
+        .project-btn-live:hover { transform: translateY(-2px); box-shadow: 0 0 15px rgba(0,229,255,0.3); }
+        footer { border-top: 1px solid var(--border); padding: 2rem; text-align: center; color: var(--text-sec); font-size: 0.75rem; }
         @media (max-width: 768px) {
             .hero-grid { grid-template-columns: 1fr; text-align: center; }
             .hero-img { width: 180px; height: 180px; margin: 0 auto; }
             .btn-group { justify-content: center; }
             .nav-links { display: none; }
+            .skill-item { padding: 0.6rem 1.2rem; font-size: 0.85rem; }
+            .section-title { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -282,9 +94,7 @@
     <section class="hero" id="home">
         <div class="container">
             <div class="hero-grid">
-                <div>
-                    <img src="pfp.jpg" alt="Ayaan Khalid Pirjade" class="hero-img" id="profileImg" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23111315\'/%3E%3Ctext x=\'50\' y=\'67\' font-size=\'40\' text-anchor=\'middle\' fill=\'%2300e5ff\' font-family=\'monospace\'%3EAP%3C/text%3E%3C/svg%3E'">
-                </div>
+                <div><img src="pfp.jpg" alt="Ayaan Khalid Pirjade" class="hero-img" id="profileImg" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23111315\'/%3E%3Ctext x=\'50\' y=\'67\' font-size=\'40\' text-anchor=\'middle\' fill=\'%2300e5ff\' font-family=\'monospace\'%3EAP%3C/text%3E%3C/svg%3E'"></div>
                 <div>
                     <div class="hero-badge">>_ AUTOMATE. SECURE. INNOVATE.</div>
                     <h1>Automating the Boring.<br><span class="gradient">Securing the Future.</span></h1>
@@ -300,21 +110,21 @@
 
     <section class="section" id="skills">
         <div class="container">
-            <h2 class="section-title">// technical arsenal</h2>
-            <div class="skills-grid" id="skillsContainer"></div>
+            <h2 class="section-title"><span class="slash">//</span> technical arsenal</h2>
+            <div class="skills-wrapper" id="skillsContainer"></div>
         </div>
     </section>
 
     <section class="section" id="services">
         <div class="container">
-            <h2 class="section-title">// what i deliver</h2>
+            <h2 class="section-title"><span class="slash">//</span> what i deliver</h2>
             <div class="services-grid" id="servicesContainer"></div>
         </div>
     </section>
 
     <section class="section" id="projects">
         <div class="container">
-            <h2 class="section-title">// live builds</h2>
+            <h2 class="section-title"><span class="slash">//</span> live builds</h2>
             <div class="projects-grid" id="projectsContainer"></div>
         </div>
     </section>
@@ -342,72 +152,86 @@
 
 <script>
 // ==================== SECURE CREDENTIALS ====================
-const ADMIN_CRED = {
-    user: btoa('iowncodz'),
-    pass: btoa('AYAAN@#7866')
-};
+const ADMIN_CRED = { user: btoa('iowncodz'), pass: btoa('AYAAN@#7866') };
 
-// ==================== DATA ====================
-let skillsData = [
-    "Python", "Networking & Linux", "Web Development", "SQL & Databases", 
-    "JavaScript", "Automation Scripting", "Cybersecurity Basics", 
-    "Penetration Testing", "API Integration", "Selenium", "Flask", "Burp Suite"
-];
+// ==================== GLOBAL DATA ====================
+let skillsData = [];
+let servicesData = [];
+let projectsData = [];
 
-let servicesData = [
-    { icon: "🤖", title: "Web Automation", desc: "Scraping, bots, and workflow automation using Python & Selenium." },
-    { icon: "🔒", title: "Security Auditing", desc: "Vulnerability assessments and security best practices." },
-    { icon: "📱", title: "Instagram Tools", desc: "Automation tools for engagement, scraping, and analytics." },
-    { icon: "🕸️", title: "Full Stack Web", desc: "Interactive websites with modern frontend & backend." },
-    { icon: "🎮", title: "Game Dev", desc: "Building small games with Pygame and JavaScript." },
-    { icon: "⚙️", title: "API Integration", desc: "Connecting services and building custom APIs." }
-];
+// ==================== LOAD DATA FROM GITHUB JSON ====================
+// CHANGE THIS URL TO YOUR GITHUB JSON FILE URL
+const DATA_URL = 'https://raw.githubusercontent.com/ayaanpirjade/ayaanpirjade/main/projects-data.json';
 
-let projectsData = [
-    { id: 1, title: "Instagram Automation Suite", desc: "Automated engagement, content scheduling, and analytics tool.", tech: ["Python", "Selenium", "Instagrapi"], github: "https://github.com/ayaanpirjade", live: "https://instagram.com", icon: "📸" },
-    { id: 2, title: "AI Content Toolkit", desc: "Content generation automation using AI APIs.", tech: ["Python", "OpenAI", "Flask"], github: "https://github.com/ayaanpirjade", live: "#", icon: "🧠" },
-    { id: 3, title: "Game in Progress", desc: "2D action game being built with Pygame.", tech: ["Python", "Pygame"], github: "https://github.com/ayaanpirjade", live: "#", icon: "🎮" },
-    { id: 4, title: "YouTube Automation Hub", desc: "Tools to automate video metadata and channel management.", tech: ["Python", "YouTube API"], github: "https://github.com/ayaanpirjade", live: "#", icon: "📺" }
-];
-
-// Save to localStorage
-function saveData() {
-    localStorage.setItem('ayaan_skills', JSON.stringify(skillsData));
-    localStorage.setItem('ayaan_services', JSON.stringify(servicesData));
-    localStorage.setItem('ayaan_projects', JSON.stringify(projectsData));
-    console.log("Data saved to localStorage");
+async function loadDataFromGitHub() {
+    try {
+        console.log("Loading data from GitHub...");
+        const response = await fetch(DATA_URL);
+        if (!response.ok) throw new Error('Failed to load data');
+        const data = await response.json();
+        
+        skillsData = data.skills || [];
+        servicesData = data.services || [];
+        projectsData = data.projects || [];
+        
+        console.log("Data loaded successfully from GitHub");
+        render();
+        return true;
+    } catch (error) {
+        console.error("Error loading from GitHub:", error);
+        // Fallback to localStorage or default
+        loadFromLocalStorage();
+        return false;
+    }
 }
 
-// Load from localStorage
-function loadData() {
+function loadFromLocalStorage() {
     let s = localStorage.getItem('ayaan_skills');
     let sv = localStorage.getItem('ayaan_services');
     let p = localStorage.getItem('ayaan_projects');
-    if(s) { skillsData = JSON.parse(s); console.log("Skills loaded"); }
-    if(sv) { servicesData = JSON.parse(sv); console.log("Services loaded"); }
-    if(p) { projectsData = JSON.parse(p); console.log("Projects loaded"); }
+    if(s) skillsData = JSON.parse(s);
+    if(sv) servicesData = JSON.parse(sv);
+    if(p) projectsData = JSON.parse(p);
+    
+    // Default data if nothing exists
+    if(skillsData.length === 0) {
+        skillsData = ["Python", "Networking & Linux", "Web Development", "SQL & Databases", "JavaScript", "Automation Scripting", "Cybersecurity Basics", "Penetration Testing", "API Integration", "Selenium", "Flask", "Burp Suite"];
+    }
+    if(servicesData.length === 0) {
+        servicesData = [
+            { icon: "🤖", title: "Web Automation", desc: "Scraping, bots, and workflow automation using Python & Selenium." },
+            { icon: "🔒", title: "Security Auditing", desc: "Vulnerability assessments and security best practices." },
+            { icon: "📱", title: "Instagram Tools", desc: "Automation tools for engagement, scraping, and analytics." },
+            { icon: "🕸️", title: "Full Stack Web", desc: "Interactive websites with modern frontend & backend." },
+            { icon: "🎮", title: "Game Dev", desc: "Building small games with Pygame and JavaScript." },
+            { icon: "⚙️", title: "API Integration", desc: "Connecting services and building custom APIs." }
+        ];
+    }
+    if(projectsData.length === 0) {
+        projectsData = [
+            { id: 1, title: "NCERTPadhlo", desc: "Free NCERT Solutions for Class 6-12.", tech: ["HTML", "CSS", "JS"], github: "https://github.com/ayaanpirjade/NCERTPadhlo", live: "https://ayaanpirjade.github.io/NCERTPadhlo/", icon: "📚" },
+            { id: 2, title: "Instagram Automation Suite", desc: "Automated engagement tool.", tech: ["Python", "Selenium"], github: "https://github.com/ayaanpirjade", live: "#", icon: "📸" }
+        ];
+    }
+    render();
 }
 
-// Render all sections
+function saveToLocalStorage() {
+    localStorage.setItem('ayaan_skills', JSON.stringify(skillsData));
+    localStorage.setItem('ayaan_services', JSON.stringify(servicesData));
+    localStorage.setItem('ayaan_projects', JSON.stringify(projectsData));
+}
+
 function render() {
     console.log("Rendering website...");
-    // Skills
     const skillsContainer = document.getElementById('skillsContainer');
     if(skillsContainer) {
-        skillsContainer.innerHTML = skillsData.map(s => `<span class="skill-tag">#${s}</span>`).join('');
+        skillsContainer.innerHTML = skillsData.map((s, index) => `<div class="skill-item" style="animation-delay: ${index * 0.03}s"><span class="skill-hash">#</span><span class="skill-name">${s}</span></div>`).join('');
     }
-    // Services
     const servicesContainer = document.getElementById('servicesContainer');
     if(servicesContainer) {
-        servicesContainer.innerHTML = servicesData.map(s => `
-            <div class="card">
-                <div class="service-icon">${s.icon}</div>
-                <div class="service-title">${s.title}</div>
-                <div class="service-desc">${s.desc}</div>
-            </div>
-        `).join('');
+        servicesContainer.innerHTML = servicesData.map(s => `<div class="card"><div class="service-icon">${s.icon}</div><div class="service-title">${s.title}</div><div class="service-desc">${s.desc}</div></div>`).join('');
     }
-    // Projects
     const projectsContainer = document.getElementById('projectsContainer');
     if(projectsContainer) {
         projectsContainer.innerHTML = projectsData.map(p => `
@@ -417,316 +241,109 @@ function render() {
                 <p style="font-size:0.8rem; color:var(--text-sec);">${p.desc}</p>
                 <div class="project-tech">${p.tech.map(t => `<span>${t}</span>`).join('')}</div>
                 <div class="project-buttons">
-                    <a href="${p.github}" target="_blank" class="project-btn project-btn-github">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.49.5.09.68-.21.68-.47 0-.23-.01-.9-.01-1.66-2.78.6-3.37-1.2-3.37-1.2-.45-1.15-1.11-1.46-1.11-1.46-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.26.1-2.62 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.36.2 2.37.1 2.62.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85 0 1.34-.01 2.42-.01 2.75 0 .26.18.56.69.47A10.02 10.02 0 0 0 22 12c0-5.52-4.48-10-10-10z"/></svg>
-                        Code
-                    </a>
-                    ${p.live && p.live !== '#' ? `<a href="${p.live}" target="_blank" class="project-btn project-btn-live">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
-                        Live Demo
-                    </a>` : ''}
+                    <a href="${p.github}" target="_blank" class="project-btn project-btn-github"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.49.5.09.68-.21.68-.47 0-.23-.01-.9-.01-1.66-2.78.6-3.37-1.2-3.37-1.2-.45-1.15-1.11-1.46-1.11-1.46-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.26.1-2.62 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.36.2 2.37.1 2.62.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85 0 1.34-.01 2.42-.01 2.75 0 .26.18.56.69.47A10.02 10.02 0 0 0 22 12c0-5.52-4.48-10-10-10z"/></svg>Code</a>
+                    ${p.live && p.live !== '#' ? `<a href="${p.live}" target="_blank" class="project-btn project-btn-live"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>Live Demo</a>` : ''}
                 </div>
             </div>
         `).join('');
     }
-    console.log("Render complete");
 }
-
-// Initial load and render
-loadData();
-render();
 
 // ==================== 3D PARTICLE BACKGROUND ====================
 const canvas = document.getElementById('bgCanvas');
 const ctx = canvas.getContext('2d');
 let particles = [];
-
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
-
 for (let i = 0; i < 100; i++) {
-    particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        r: Math.random() * 2 + 0.5,
-        vx: (Math.random() - 0.5) * 0.6,
-        vy: (Math.random() - 0.5) * 0.6,
-        o: Math.random() * 0.4 + 0.1
-    });
+    particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, r: Math.random() * 2 + 0.5, vx: (Math.random() - 0.5) * 0.6, vy: (Math.random() - 0.5) * 0.6, o: Math.random() * 0.4 + 0.1 });
 }
-
 let mouseX = canvas.width / 2, mouseY = canvas.height / 2;
 document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
-
 function animateParticles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let p of particles) {
         let dx = mouseX - p.x, dy = mouseY - p.y;
         let dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < 150) { p.x -= dx * 0.005; p.y -= dy * 0.005; }
-        
-        p.x += p.vx;
-        p.y += p.vy;
+        p.x += p.vx; p.y += p.vy;
         if (p.x < 0) p.x = canvas.width;
         if (p.x > canvas.width) p.x = 0;
         if (p.y < 0) p.y = canvas.height;
         if (p.y > canvas.height) p.y = 0;
-        
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0, 229, 255, ${p.o})`;
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 229, 255, ${p.o})`; ctx.fill();
     }
     requestAnimationFrame(animateParticles);
 }
 animateParticles();
 
-// ==================== ADMIN PANEL - ACCESS VIA #admin ====================
+// ==================== INITIAL LOAD ====================
+loadDataFromGitHub();
+
+// ==================== ADMIN PANEL ====================
 let adminLogged = false;
-
-function verifyCredentials(user, pass) {
-    return btoa(user) === ADMIN_CRED.user && btoa(pass) === ADMIN_CRED.pass;
-}
-
-function openAdmin() {
-    if (adminLogged) showPanel();
-    else showLogin();
-}
-
+function verifyCredentials(user, pass) { return btoa(user) === ADMIN_CRED.user && btoa(pass) === ADMIN_CRED.pass; }
+function openAdmin() { adminLogged ? showPanel() : showLogin(); }
 function showLogin() {
     let modal = document.createElement('div');
     modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.96);backdrop-filter:blur(8px);z-index:10000;display:flex;align-items:center;justify-content:center';
-    modal.innerHTML = `
-        <div style="background:linear-gradient(135deg,#111315,#0a0c0f);border:1px solid #00e5ff;border-radius:28px;padding:2rem;width:340px;text-align:center;box-shadow:0 0 40px rgba(0,229,255,0.15)">
-            <h2 style="color:#00e5ff;margin-bottom:1.5rem">⚡ ADMIN VAULT ⚡</h2>
-            <input id="adminUser" placeholder="username" style="width:100%;padding:0.8rem;margin:0.5rem 0;background:#1a1f2a;border:1px solid #333;border-radius:14px;color:white;outline:none">
-            <input id="adminPass" type="password" placeholder="password" style="width:100%;padding:0.8rem;margin:0.5rem 0;background:#1a1f2a;border:1px solid #333;border-radius:14px;color:white;outline:none">
-            <button id="adminLoginBtn" style="background:#00e5ff;border:none;padding:0.8rem;width:100%;border-radius:14px;font-weight:700;margin-top:1rem;cursor:pointer">➤ ACCESS PANEL</button>
-            <p style="margin-top:1rem;font-size:0.65rem;color:#4a4f58">restricted area — authorized only</p>
-        </div>
-    `;
+    modal.innerHTML = `<div style="background:linear-gradient(135deg,#111315,#0a0c0f);border:1px solid #00e5ff;border-radius:28px;padding:2rem;width:340px;text-align:center;box-shadow:0 0 40px rgba(0,229,255,0.15)">
+        <h2 style="color:#00e5ff;margin-bottom:1.5rem">⚡ ADMIN VAULT ⚡</h2>
+        <input id="adminUser" placeholder="username" style="width:100%;padding:0.8rem;margin:0.5rem 0;background:#1a1f2a;border:1px solid #333;border-radius:14px;color:white">
+        <input id="adminPass" type="password" placeholder="password" style="width:100%;padding:0.8rem;margin:0.5rem 0;background:#1a1f2a;border:1px solid #333;border-radius:14px;color:white">
+        <button id="adminLoginBtn" style="background:#00e5ff;border:none;padding:0.8rem;width:100%;border-radius:14px;font-weight:700;margin-top:1rem;cursor:pointer">➤ ACCESS PANEL</button>
+        <p style="margin-top:1rem;font-size:0.65rem;color:#4a4f58">restricted area — authorized only</p>
+    </div>`;
     document.body.appendChild(modal);
-    
     document.getElementById('adminLoginBtn').onclick = () => {
         let u = document.getElementById('adminUser').value;
         let p = document.getElementById('adminPass').value;
-        if (verifyCredentials(u, p)) {
-            adminLogged = true;
-            modal.remove();
-            showPanel();
-        } else {
-            alert('⛔ Access Denied. Invalid credentials.');
-        }
+        if (verifyCredentials(u, p)) { adminLogged = true; modal.remove(); showPanel(); }
+        else alert('⛔ Access Denied.');
     };
-    document.getElementById('adminPass').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') document.getElementById('adminLoginBtn').click();
-    });
 }
-
 function showPanel() {
     let modal = document.createElement('div');
     modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.96);z-index:10000;overflow:auto;display:flex;align-items:center;justify-content:center';
-    modal.innerHTML = `
-        <div style="background:linear-gradient(135deg,#111315,#0a0c0f);border:1px solid #00e5ff;border-radius:28px;padding:1.8rem;width:90%;max-width:680px;max-height:85vh;overflow:auto">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;border-bottom:1px solid rgba(0,229,255,0.2);padding-bottom:1rem">
-                <h2 style="color:#00e5ff">🔧 CONTROL CENTER</h2>
-                <button id="closeModal" style="background:none;border:none;color:white;font-size:1.8rem;cursor:pointer">&times;</button>
-            </div>
-            
-            <h3 style="margin-bottom:0.5rem">📦 ADD NEW PROJECT</h3>
-            <input id="pTitle" placeholder="Project Title" style="width:100%;padding:0.6rem;margin:0.3rem 0;background:#1a1f2a;border:1px solid #333;border-radius:10px;color:white">
-            <input id="pDesc" placeholder="Description" style="width:100%;padding:0.6rem;margin:0.3rem 0;background:#1a1f2a;border:1px solid #333;border-radius:10px;color:white">
-            <input id="pTech" placeholder="Tech (comma separated)" style="width:100%;padding:0.6rem;margin:0.3rem 0;background:#1a1f2a;border:1px solid #333;border-radius:10px;color:white">
-            <input id="pGithub" placeholder="GitHub Link" style="width:100%;padding:0.6rem;margin:0.3rem 0;background:#1a1f2a;border:1px solid #333;border-radius:10px;color:white">
-            <input id="pLive" placeholder="Live Demo Link (https://...)" style="width:100%;padding:0.6rem;margin:0.3rem 0;background:#1a1f2a;border:1px solid #333;border-radius:10px;color:white">
-            <input id="pIcon" placeholder="Icon (emoji)" style="width:100%;padding:0.6rem;margin:0.3rem 0;background:#1a1f2a;border:1px solid #333;border-radius:10px;color:white">
-            <button id="addProjBtn" style="background:#00e5ff;border:none;padding:0.6rem;width:100%;border-radius:10px;font-weight:700;margin:0.5rem 0;cursor:pointer">+ ADD PROJECT</button>
-            
-            <h3 style="margin-top:1.5rem">📋 MANAGE PROJECTS</h3>
-            <div id="projectList"></div>
-            
-            <h3 style="margin-top:1.5rem">🎯 MANAGE SKILLS</h3>
-            <div id="skillList" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin:0.8rem 0"></div>
-            <div style="display:flex;gap:0.5rem">
-                <input id="newSkill" placeholder="New Skill" style="flex:1;padding:0.6rem;background:#1a1f2a;border:1px solid #333;border-radius:10px;color:white">
-                <button id="addSkillBtn" style="background:#b980ea;border:none;padding:0.6rem 1rem;border-radius:10px;cursor:pointer">+ Add</button>
-            </div>
-            
-            <h3 style="margin-top:1.5rem">⚙️ MANAGE SERVICES</h3>
-            <div id="servicesEditArea"></div>
-            
-            <button id="saveAllBtn" style="background:linear-gradient(135deg,#00e5ff,#b980ea);border:none;padding:0.8rem;width:100%;border-radius:12px;font-weight:700;margin-top:1.5rem;cursor:pointer">💾 SAVE ALL CHANGES</button>
-        </div>
-    `;
+    modal.innerHTML = `<div style="background:linear-gradient(135deg,#111315,#0a0c0f);border:1px solid #00e5ff;border-radius:28px;padding:1.8rem;width:90%;max-width:680px;max-height:85vh;overflow:auto">
+        <div style="display:flex;justify-content:space-between;margin-bottom:1rem"><h2 style="color:#00e5ff">🔧 CONTROL CENTER</h2><button id="closeModal" style="background:none;border:none;color:white;font-size:1.8rem;cursor:pointer">&times;</button></div>
+        <p style="color:#ffaa00;font-size:0.7rem;margin-bottom:1rem">⚠️ Changes save to LOCAL STORAGE only. To make global, update GitHub JSON file.</p>
+        <h3>📦 ADD NEW PROJECT</h3>
+        <input id="pTitle" placeholder="Title"><input id="pDesc" placeholder="Description"><input id="pTech" placeholder="Tech (comma)"><input id="pGithub" placeholder="GitHub Link"><input id="pLive" placeholder="Live Demo Link"><input id="pIcon" placeholder="Icon (emoji)">
+        <button id="addProjBtn" style="background:#00e5ff;padding:0.6rem;width:100%;border-radius:10px;margin:0.5rem 0">+ ADD PROJECT</button>
+        <h3>📋 MANAGE PROJECTS</h3><div id="projectList"></div>
+        <h3>🎯 MANAGE SKILLS</h3><div id="skillList"></div><input id="newSkill" placeholder="New Skill"><button id="addSkillBtn">+ Add Skill</button>
+        <h3>⚙️ MANAGE SERVICES</h3><div id="servicesEditArea"></div>
+        <button id="saveAllBtn" style="background:linear-gradient(135deg,#00e5ff,#b980ea);padding:0.8rem;width:100%;border-radius:12px;margin-top:1rem">💾 SAVE TO LOCAL STORAGE</button>
+        <p style="margin-top:1rem;font-size:0.65rem;color:#4a4f58">To make changes visible to everyone, copy the data and update your GitHub JSON file.</p>
+    </div>`;
     document.body.appendChild(modal);
     
-    function refreshProjectList() {
+    function refreshLists() {
         let listDiv = document.getElementById('projectList');
-        listDiv.innerHTML = projectsData.map((p, i) => `
-            <div style="background:#1a1f2a;padding:0.8rem;margin:0.5rem 0;border-radius:12px">
-                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem">
-                    <span><strong>${p.title}</strong><br><small style="color:#8a8f98">${p.desc.substring(0,50)}</small></span>
-                    <div>
-                        <button class="editProj" data-idx="${i}" style="background:#00e5ff;border:none;padding:0.3rem 0.8rem;border-radius:8px;cursor:pointer;margin-right:0.3rem">✏️ Edit</button>
-                        <button class="delProj" data-idx="${i}" style="background:#ff4d4d;border:none;padding:0.3rem 0.8rem;border-radius:8px;cursor:pointer">🗑️ Del</button>
-                    </div>
-                </div>
-                <div style="margin-top:0.3rem; font-size:0.7rem; color:var(--cyan)">
-                    ${p.live && p.live !== '#' ? `🔗 Live: ${p.live.substring(0,40)}` : '🔗 No live link (add one!)'}
-                </div>
-            </div>
-        `).join('');
-        
-        document.querySelectorAll('.delProj').forEach(btn => {
-            btn.onclick = () => { 
-                if(confirm('Delete this project?')) { 
-                    projectsData.splice(parseInt(btn.dataset.idx), 1); 
-                    saveData();
-                    refreshProjectList(); 
-                    render();
-                    alert('Project deleted! Website updated.');
-                } 
-            };
-        });
-        document.querySelectorAll('.editProj').forEach(btn => {
-            btn.onclick = () => {
-                let i = parseInt(btn.dataset.idx);
-                let p = projectsData[i];
-                p.title = prompt('Title', p.title) || p.title;
-                p.desc = prompt('Description', p.desc) || p.desc;
-                p.tech = prompt('Tech (comma separated)', p.tech.join(',')).split(',').map(t => t.trim());
-                p.github = prompt('GitHub Link', p.github) || p.github;
-                p.live = prompt('Live Demo Link (or # for none)', p.live) || '#';
-                saveData();
-                refreshProjectList();
-                render();
-                alert('Project updated! Website refreshed.');
-            };
-        });
-    }
-    
-    function refreshSkillsEdit() {
+        listDiv.innerHTML = projectsData.map((p, i) => `<div style="background:#1a1f2a;padding:0.5rem;margin:0.3rem 0;border-radius:8px"><div style="display:flex;justify-content:space-between"><span><strong>${p.title}</strong><br><small>${p.desc.substring(0,50)}</small></span><div><button class="editProj" data-idx="${i}">✏️ Edit</button><button class="delProj" data-idx="${i}">🗑️ Del</button></div></div></div>`).join('');
+        document.querySelectorAll('.delProj').forEach(btn => { btn.onclick = () => { projectsData.splice(parseInt(btn.dataset.idx),1); refreshLists(); saveToLocalStorage(); render(); alert('Deleted locally!'); }; });
+        document.querySelectorAll('.editProj').forEach(btn => { btn.onclick = () => { let i=parseInt(btn.dataset.idx); let p=projectsData[i]; p.title=prompt('Title',p.title)||p.title; p.desc=prompt('Desc',p.desc)||p.desc; p.tech=prompt('Tech (comma)',p.tech.join(',')).split(',').map(t=>t.trim()); p.github=prompt('GitHub',p.github)||p.github; p.live=prompt('Live Link',p.live)||p.live; refreshLists(); saveToLocalStorage(); render(); alert('Updated locally!'); }; });
         let skillDiv = document.getElementById('skillList');
-        skillDiv.innerHTML = skillsData.map((s, i) => `
-            <span style="background:#1a1f2a;padding:0.3rem 0.8rem;border-radius:20px;display:inline-flex;align-items:center;gap:0.3rem">
-                ${s} <button class="delSkill" data-idx="${i}" style="background:none;border:none;color:#ff4d4d;cursor:pointer;font-size:1rem">✖</button>
-            </span>
-        `).join('');
-        document.querySelectorAll('.delSkill').forEach(btn => {
-            btn.onclick = () => { 
-                skillsData.splice(parseInt(btn.dataset.idx), 1); 
-                saveData();
-                refreshSkillsEdit(); 
-                render();
-                alert('Skill deleted! Website updated.');
-            };
-        });
-    }
-    
-    function refreshServicesEdit() {
+        skillDiv.innerHTML = skillsData.map((s,i) => `<span style="background:#1a1f2a;padding:0.3rem 0.8rem;margin:0.2rem;display:inline-block;border-radius:20px">${s} <button class="delSkill" data-idx="${i}" style="background:none;border:none;color:#ff4d4d">✖</button></span>`).join('');
+        document.querySelectorAll('.delSkill').forEach(btn => { btn.onclick = () => { skillsData.splice(parseInt(btn.dataset.idx),1); refreshLists(); saveToLocalStorage(); render(); }; });
         let servicesDiv = document.getElementById('servicesEditArea');
-        servicesDiv.innerHTML = servicesData.map((sv, i) => `
-            <div style="background:#1a1f2a;padding:0.8rem;border-radius:12px;margin-bottom:0.8rem">
-                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem">
-                    <input id="sv_icon_${i}" value="${sv.icon}" style="width:60px;padding:0.4rem;background:#0a0c0f;border:1px solid #333;border-radius:8px;color:white">
-                    <input id="sv_title_${i}" value="${sv.title}" style="flex:1;padding:0.4rem;background:#0a0c0f;border:1px solid #333;border-radius:8px;color:white">
-                    <button class="delService" data-idx="${i}" style="background:#ff4d4d;border:none;padding:0.3rem 0.8rem;border-radius:8px;cursor:pointer">Delete</button>
-                </div>
-                <textarea id="sv_desc_${i}" style="width:100%;padding:0.5rem;background:#0a0c0f;border:1px solid #333;border-radius:8px;color:white;resize:vertical">${sv.desc}</textarea>
-            </div>
-        `).join('');
-        document.querySelectorAll('.delService').forEach(btn => {
-            btn.onclick = () => { 
-                servicesData.splice(parseInt(btn.dataset.idx), 1); 
-                saveData();
-                refreshServicesEdit(); 
-                render();
-                alert('Service deleted! Website updated.');
-            };
-        });
+        servicesDiv.innerHTML = servicesData.map((sv,i) => `<div style="background:#1a1f2a;padding:0.5rem;margin:0.3rem 0;border-radius:8px"><input id="sv_icon_${i}" value="${sv.icon}" style="width:60px"><input id="sv_title_${i}" value="${sv.title}"><textarea id="sv_desc_${i}">${sv.desc}</textarea><button class="delService" data-idx="${i}">Delete</button></div>`).join('');
+        document.querySelectorAll('.delService').forEach(btn => { btn.onclick = () => { servicesData.splice(parseInt(btn.dataset.idx),1); refreshLists(); saveToLocalStorage(); render(); }; });
     }
-    
-    refreshProjectList();
-    refreshSkillsEdit();
-    refreshServicesEdit();
-    
-    document.getElementById('addProjBtn').onclick = () => {
-        let newProj = {
-            id: Date.now(),
-            title: document.getElementById('pTitle').value.trim() || "New Project",
-            desc: document.getElementById('pDesc').value.trim() || "Description",
-            tech: document.getElementById('pTech').value.split(',').map(t => t.trim()).filter(t => t),
-            github: document.getElementById('pGithub').value.trim() || "#",
-            live: document.getElementById('pLive').value.trim() || "#",
-            icon: document.getElementById('pIcon').value.trim() || "🚀"
-        };
-        if(newProj.tech.length === 0) newProj.tech = ["New Tech"];
-        projectsData.push(newProj);
-        saveData();
-        refreshProjectList();
-        render();
-        alert('✅ Project added! Website updated.');
-        document.getElementById('pTitle').value = '';
-        document.getElementById('pDesc').value = '';
-        document.getElementById('pTech').value = '';
-        document.getElementById('pGithub').value = '';
-        document.getElementById('pLive').value = '';
-        document.getElementById('pIcon').value = '';
-    };
-    
-    document.getElementById('addSkillBtn').onclick = () => {
-        let ns = document.getElementById('newSkill').value.trim();
-        if(ns) { 
-            skillsData.push(ns); 
-            saveData();
-            refreshSkillsEdit(); 
-            render();
-            alert('✅ Skill added! Website updated.');
-            document.getElementById('newSkill').value = ''; 
-        }
-    };
-    
-    document.getElementById('saveAllBtn').onclick = () => {
-        // Update services from inputs
-        for(let i = 0; i < servicesData.length; i++) {
-            let newIcon = document.getElementById(`sv_icon_${i}`)?.value;
-            let newTitle = document.getElementById(`sv_title_${i}`)?.value;
-            let newDesc = document.getElementById(`sv_desc_${i}`)?.value;
-            if(newIcon) servicesData[i].icon = newIcon;
-            if(newTitle) servicesData[i].title = newTitle;
-            if(newDesc !== undefined) servicesData[i].desc = newDesc;
-        }
-        saveData();
-        render();
-        alert('✅ All changes saved! Website updated instantly.');
-    };
-    
+    refreshLists();
+    document.getElementById('addProjBtn').onclick = () => { let newProj = { id:Date.now(), title:document.getElementById('pTitle').value.trim()||"New", desc:document.getElementById('pDesc').value.trim()||"Desc", tech:document.getElementById('pTech').value.split(',').map(t=>t.trim()), github:document.getElementById('pGithub').value.trim()||"#", live:document.getElementById('pLive').value.trim()||"#", icon:document.getElementById('pIcon').value.trim()||"🚀" }; projectsData.push(newProj); refreshLists(); saveToLocalStorage(); render(); alert('Added locally!'); };
+    document.getElementById('addSkillBtn').onclick = () => { let ns=document.getElementById('newSkill').value.trim(); if(ns){ skillsData.push(ns); refreshLists(); saveToLocalStorage(); render(); } };
+    document.getElementById('saveAllBtn').onclick = () => { for(let i=0;i<servicesData.length;i++){ let ic=document.getElementById(`sv_icon_${i}`)?.value; let ti=document.getElementById(`sv_title_${i}`)?.value; let de=document.getElementById(`sv_desc_${i}`)?.value; if(ic) servicesData[i].icon=ic; if(ti) servicesData[i].title=ti; if(de!==undefined) servicesData[i].desc=de; } saveToLocalStorage(); render(); alert('✅ Saved to localStorage! Copy data to GitHub JSON for global update.'); };
     document.getElementById('closeModal').onclick = () => modal.remove();
 }
 
-// Check for #admin in URL
-function checkAdminHash() {
-    if (window.location.hash === '#admin') {
-        openAdmin();
-        history.pushState(null, null, window.location.pathname);
-    }
-}
-
+function checkAdminHash() { if (window.location.hash === '#admin') { openAdmin(); history.pushState(null,null,window.location.pathname); } }
 window.addEventListener('hashchange', checkAdminHash);
 checkAdminHash();
-
-// Smooth scroll
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        let target = document.querySelector(this.getAttribute('href'));
-        if(target) target.scrollIntoView({ behavior: 'smooth' });
-    });
-});
+document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', function(e) { e.preventDefault(); document.querySelector(this.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' }); }));
 </script>
 </body>
 </html>
