@@ -170,8 +170,8 @@
         }
         .skills-grid, .services-grid, .projects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.2rem;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
         }
         .card {
             background: var(--card);
@@ -182,7 +182,7 @@
         }
         .card:hover {
             border-color: rgba(0,229,255,0.3);
-            transform: translateY(-3px);
+            transform: translateY(-4px);
         }
         .skill-tag {
             display: inline-block;
@@ -208,11 +208,45 @@
             border-radius: 12px;
             margin-bottom: 1rem;
         }
-        .project-title { font-weight: 700; margin-bottom: 0.3rem; }
+        .project-title { font-weight: 700; margin-bottom: 0.3rem; font-size: 1.2rem; }
         .project-tech { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.7rem 0; }
         .project-tech span { font-size: 0.65rem; padding: 0.2rem 0.6rem; background: rgba(255,255,255,0.05); border-radius: 12px; }
-        .project-links a { font-size: 0.75rem; color: var(--cyan); text-decoration: none; margin-right: 1rem; transition: opacity 0.2s; }
-        .project-links a:hover { opacity: 0.7; }
+        .project-buttons {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        .project-btn {
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .project-btn-github {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: var(--text-sec);
+        }
+        .project-btn-github:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+        .project-btn-live {
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            border: none;
+            color: #0a0c0f;
+        }
+        .project-btn-live:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(0,229,255,0.3);
+        }
         footer {
             border-top: 1px solid var(--border);
             padding: 2rem;
@@ -308,7 +342,6 @@
 
 <script>
 // ==================== SECURE CREDENTIALS ====================
-// Username: iowncodz | Password: AYAAN@#7866
 const ADMIN_CRED = {
     user: btoa('iowncodz'),
     pass: btoa('AYAAN@#7866')
@@ -331,49 +364,75 @@ let servicesData = [
 ];
 
 let projectsData = [
-    { id: 1, title: "Instagram Automation Suite", desc: "Automated engagement, content scheduling, and analytics tool.", tech: ["Python", "Selenium", "Instagrapi"], github: "https://github.com/iowncodz", icon: "📸" },
-    { id: 2, title: "AI Content Toolkit", desc: "Content generation automation using AI APIs.", tech: ["Python", "OpenAI", "Flask"], github: "https://github.com/iowncodz", icon: "🧠" },
-    { id: 3, title: "Game in Progress", desc: "2D action game being built with Pygame.", tech: ["Python", "Pygame"], github: "https://github.com/iowncodz", icon: "🎮" },
-    { id: 4, title: "YouTube Automation Hub", desc: "Tools to automate video metadata and channel management.", tech: ["Python", "YouTube API"], github: "https://github.com/iowncodz", icon: "📺" }
+    { id: 1, title: "Instagram Automation Suite", desc: "Automated engagement, content scheduling, and analytics tool.", tech: ["Python", "Selenium", "Instagrapi"], github: "https://github.com/iowncodz", live: "https://instagram.com", icon: "📸" },
+    { id: 2, title: "AI Content Toolkit", desc: "Content generation automation using AI APIs.", tech: ["Python", "OpenAI", "Flask"], github: "https://github.com/iowncodz", live: "#", icon: "🧠" },
+    { id: 3, title: "Game in Progress", desc: "2D action game being built with Pygame.", tech: ["Python", "Pygame"], github: "https://github.com/iowncodz", live: "#", icon: "🎮" },
+    { id: 4, title: "YouTube Automation Hub", desc: "Tools to automate video metadata and channel management.", tech: ["Python", "YouTube API"], github: "https://github.com/iowncodz", live: "#", icon: "📺" }
 ];
 
+// Save to localStorage
 function saveData() {
     localStorage.setItem('ayaan_skills', JSON.stringify(skillsData));
     localStorage.setItem('ayaan_services', JSON.stringify(servicesData));
     localStorage.setItem('ayaan_projects', JSON.stringify(projectsData));
+    console.log("Data saved to localStorage");
 }
 
+// Load from localStorage
 function loadData() {
     let s = localStorage.getItem('ayaan_skills');
     let sv = localStorage.getItem('ayaan_services');
     let p = localStorage.getItem('ayaan_projects');
-    if(s) skillsData = JSON.parse(s);
-    if(sv) servicesData = JSON.parse(sv);
-    if(p) projectsData = JSON.parse(p);
+    if(s) { skillsData = JSON.parse(s); console.log("Skills loaded"); }
+    if(sv) { servicesData = JSON.parse(sv); console.log("Services loaded"); }
+    if(p) { projectsData = JSON.parse(p); console.log("Projects loaded"); }
 }
 
+// Render all sections
 function render() {
-    document.getElementById('skillsContainer').innerHTML = skillsData.map(s => `<span class="skill-tag">#${s}</span>`).join('');
-    document.getElementById('servicesContainer').innerHTML = servicesData.map(s => `
-        <div class="card">
-            <div class="service-icon">${s.icon}</div>
-            <div class="service-title">${s.title}</div>
-            <div class="service-desc">${s.desc}</div>
-        </div>
-    `).join('');
-    document.getElementById('projectsContainer').innerHTML = projectsData.map(p => `
-        <div class="card">
-            <div class="project-img">${p.icon || '🚀'}</div>
-            <div class="project-title">${p.title}</div>
-            <p style="font-size:0.8rem; color:var(--text-sec);">${p.desc}</p>
-            <div class="project-tech">${p.tech.map(t => `<span>${t}</span>`).join('')}</div>
-            <div class="project-links">
-                <a href="${p.github}" target="_blank">GitHub →</a>
+    console.log("Rendering website...");
+    // Skills
+    const skillsContainer = document.getElementById('skillsContainer');
+    if(skillsContainer) {
+        skillsContainer.innerHTML = skillsData.map(s => `<span class="skill-tag">#${s}</span>`).join('');
+    }
+    // Services
+    const servicesContainer = document.getElementById('servicesContainer');
+    if(servicesContainer) {
+        servicesContainer.innerHTML = servicesData.map(s => `
+            <div class="card">
+                <div class="service-icon">${s.icon}</div>
+                <div class="service-title">${s.title}</div>
+                <div class="service-desc">${s.desc}</div>
             </div>
-        </div>
-    `).join('');
+        `).join('');
+    }
+    // Projects
+    const projectsContainer = document.getElementById('projectsContainer');
+    if(projectsContainer) {
+        projectsContainer.innerHTML = projectsData.map(p => `
+            <div class="card">
+                <div class="project-img">${p.icon || '🚀'}</div>
+                <div class="project-title">${p.title}</div>
+                <p style="font-size:0.8rem; color:var(--text-sec);">${p.desc}</p>
+                <div class="project-tech">${p.tech.map(t => `<span>${t}</span>`).join('')}</div>
+                <div class="project-buttons">
+                    <a href="${p.github}" target="_blank" class="project-btn project-btn-github">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.49.5.09.68-.21.68-.47 0-.23-.01-.9-.01-1.66-2.78.6-3.37-1.2-3.37-1.2-.45-1.15-1.11-1.46-1.11-1.46-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.26.1-2.62 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.36.2 2.37.1 2.62.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85 0 1.34-.01 2.42-.01 2.75 0 .26.18.56.69.47A10.02 10.02 0 0 0 22 12c0-5.52-4.48-10-10-10z"/></svg>
+                        Code
+                    </a>
+                    ${p.live && p.live !== '#' ? `<a href="${p.live}" target="_blank" class="project-btn project-btn-live">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+                        Live Demo
+                    </a>` : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+    console.log("Render complete");
 }
 
+// Initial load and render
 loadData();
 render();
 
@@ -442,7 +501,7 @@ function showLogin() {
     let modal = document.createElement('div');
     modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.96);backdrop-filter:blur(8px);z-index:10000;display:flex;align-items:center;justify-content:center';
     modal.innerHTML = `
-        <div style="background:linear-gradient(135deg,#111315,#0a0c0f);border:1px solid #00e5ff;border-radius:28px;padding:2rem;width:320px;text-align:center;box-shadow:0 0 40px rgba(0,229,255,0.15)">
+        <div style="background:linear-gradient(135deg,#111315,#0a0c0f);border:1px solid #00e5ff;border-radius:28px;padding:2rem;width:340px;text-align:center;box-shadow:0 0 40px rgba(0,229,255,0.15)">
             <h2 style="color:#00e5ff;margin-bottom:1.5rem">⚡ ADMIN VAULT ⚡</h2>
             <input id="adminUser" placeholder="username" style="width:100%;padding:0.8rem;margin:0.5rem 0;background:#1a1f2a;border:1px solid #333;border-radius:14px;color:white;outline:none">
             <input id="adminPass" type="password" placeholder="password" style="width:100%;padding:0.8rem;margin:0.5rem 0;background:#1a1f2a;border:1px solid #333;border-radius:14px;color:white;outline:none">
@@ -472,16 +531,18 @@ function showPanel() {
     let modal = document.createElement('div');
     modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.96);z-index:10000;overflow:auto;display:flex;align-items:center;justify-content:center';
     modal.innerHTML = `
-        <div style="background:linear-gradient(135deg,#111315,#0a0c0f);border:1px solid #00e5ff;border-radius:28px;padding:1.8rem;width:90%;max-width:650px;max-height:85vh;overflow:auto">
+        <div style="background:linear-gradient(135deg,#111315,#0a0c0f);border:1px solid #00e5ff;border-radius:28px;padding:1.8rem;width:90%;max-width:680px;max-height:85vh;overflow:auto">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;border-bottom:1px solid rgba(0,229,255,0.2);padding-bottom:1rem">
                 <h2 style="color:#00e5ff">🔧 CONTROL CENTER</h2>
                 <button id="closeModal" style="background:none;border:none;color:white;font-size:1.8rem;cursor:pointer">&times;</button>
             </div>
+            
             <h3 style="margin-bottom:0.5rem">📦 ADD NEW PROJECT</h3>
             <input id="pTitle" placeholder="Project Title" style="width:100%;padding:0.6rem;margin:0.3rem 0;background:#1a1f2a;border:1px solid #333;border-radius:10px;color:white">
             <input id="pDesc" placeholder="Description" style="width:100%;padding:0.6rem;margin:0.3rem 0;background:#1a1f2a;border:1px solid #333;border-radius:10px;color:white">
             <input id="pTech" placeholder="Tech (comma separated)" style="width:100%;padding:0.6rem;margin:0.3rem 0;background:#1a1f2a;border:1px solid #333;border-radius:10px;color:white">
             <input id="pGithub" placeholder="GitHub Link" style="width:100%;padding:0.6rem;margin:0.3rem 0;background:#1a1f2a;border:1px solid #333;border-radius:10px;color:white">
+            <input id="pLive" placeholder="Live Demo Link (https://...)" style="width:100%;padding:0.6rem;margin:0.3rem 0;background:#1a1f2a;border:1px solid #333;border-radius:10px;color:white">
             <input id="pIcon" placeholder="Icon (emoji)" style="width:100%;padding:0.6rem;margin:0.3rem 0;background:#1a1f2a;border:1px solid #333;border-radius:10px;color:white">
             <button id="addProjBtn" style="background:#00e5ff;border:none;padding:0.6rem;width:100%;border-radius:10px;font-weight:700;margin:0.5rem 0;cursor:pointer">+ ADD PROJECT</button>
             
@@ -506,17 +567,30 @@ function showPanel() {
     function refreshProjectList() {
         let listDiv = document.getElementById('projectList');
         listDiv.innerHTML = projectsData.map((p, i) => `
-            <div style="background:#1a1f2a;padding:0.8rem;margin:0.5rem 0;border-radius:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem">
-                <span><strong>${p.title}</strong><br><small style="color:#8a8f98">${p.desc.substring(0,50)}</small></span>
-                <div>
-                    <button class="editProj" data-idx="${i}" style="background:#00e5ff;border:none;padding:0.3rem 0.8rem;border-radius:8px;cursor:pointer;margin-right:0.3rem">✏️ Edit</button>
-                    <button class="delProj" data-idx="${i}" style="background:#ff4d4d;border:none;padding:0.3rem 0.8rem;border-radius:8px;cursor:pointer">🗑️ Del</button>
+            <div style="background:#1a1f2a;padding:0.8rem;margin:0.5rem 0;border-radius:12px">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem">
+                    <span><strong>${p.title}</strong><br><small style="color:#8a8f98">${p.desc.substring(0,50)}</small></span>
+                    <div>
+                        <button class="editProj" data-idx="${i}" style="background:#00e5ff;border:none;padding:0.3rem 0.8rem;border-radius:8px;cursor:pointer;margin-right:0.3rem">✏️ Edit</button>
+                        <button class="delProj" data-idx="${i}" style="background:#ff4d4d;border:none;padding:0.3rem 0.8rem;border-radius:8px;cursor:pointer">🗑️ Del</button>
+                    </div>
+                </div>
+                <div style="margin-top:0.3rem; font-size:0.7rem; color:var(--cyan)">
+                    ${p.live && p.live !== '#' ? `🔗 Live: ${p.live.substring(0,40)}` : '🔗 No live link (add one!)'}
                 </div>
             </div>
         `).join('');
         
         document.querySelectorAll('.delProj').forEach(btn => {
-            btn.onclick = () => { if(confirm('Delete this project?')) { projectsData.splice(parseInt(btn.dataset.idx), 1); refreshProjectList(); } };
+            btn.onclick = () => { 
+                if(confirm('Delete this project?')) { 
+                    projectsData.splice(parseInt(btn.dataset.idx), 1); 
+                    saveData();
+                    refreshProjectList(); 
+                    render();
+                    alert('Project deleted! Website updated.');
+                } 
+            };
         });
         document.querySelectorAll('.editProj').forEach(btn => {
             btn.onclick = () => {
@@ -526,7 +600,11 @@ function showPanel() {
                 p.desc = prompt('Description', p.desc) || p.desc;
                 p.tech = prompt('Tech (comma separated)', p.tech.join(',')).split(',').map(t => t.trim());
                 p.github = prompt('GitHub Link', p.github) || p.github;
+                p.live = prompt('Live Demo Link (or # for none)', p.live) || '#';
+                saveData();
                 refreshProjectList();
+                render();
+                alert('Project updated! Website refreshed.');
             };
         });
     }
@@ -539,7 +617,13 @@ function showPanel() {
             </span>
         `).join('');
         document.querySelectorAll('.delSkill').forEach(btn => {
-            btn.onclick = () => { skillsData.splice(parseInt(btn.dataset.idx), 1); refreshSkillsEdit(); };
+            btn.onclick = () => { 
+                skillsData.splice(parseInt(btn.dataset.idx), 1); 
+                saveData();
+                refreshSkillsEdit(); 
+                render();
+                alert('Skill deleted! Website updated.');
+            };
         });
     }
     
@@ -556,7 +640,13 @@ function showPanel() {
             </div>
         `).join('');
         document.querySelectorAll('.delService').forEach(btn => {
-            btn.onclick = () => { servicesData.splice(parseInt(btn.dataset.idx), 1); refreshServicesEdit(); };
+            btn.onclick = () => { 
+                servicesData.splice(parseInt(btn.dataset.idx), 1); 
+                saveData();
+                refreshServicesEdit(); 
+                render();
+                alert('Service deleted! Website updated.');
+            };
         });
     }
     
@@ -571,24 +661,37 @@ function showPanel() {
             desc: document.getElementById('pDesc').value.trim() || "Description",
             tech: document.getElementById('pTech').value.split(',').map(t => t.trim()).filter(t => t),
             github: document.getElementById('pGithub').value.trim() || "#",
+            live: document.getElementById('pLive').value.trim() || "#",
             icon: document.getElementById('pIcon').value.trim() || "🚀"
         };
         if(newProj.tech.length === 0) newProj.tech = ["New Tech"];
         projectsData.push(newProj);
+        saveData();
         refreshProjectList();
+        render();
+        alert('✅ Project added! Website updated.');
         document.getElementById('pTitle').value = '';
         document.getElementById('pDesc').value = '';
         document.getElementById('pTech').value = '';
         document.getElementById('pGithub').value = '';
+        document.getElementById('pLive').value = '';
         document.getElementById('pIcon').value = '';
     };
     
     document.getElementById('addSkillBtn').onclick = () => {
         let ns = document.getElementById('newSkill').value.trim();
-        if(ns) { skillsData.push(ns); refreshSkillsEdit(); document.getElementById('newSkill').value = ''; }
+        if(ns) { 
+            skillsData.push(ns); 
+            saveData();
+            refreshSkillsEdit(); 
+            render();
+            alert('✅ Skill added! Website updated.');
+            document.getElementById('newSkill').value = ''; 
+        }
     };
     
     document.getElementById('saveAllBtn').onclick = () => {
+        // Update services from inputs
         for(let i = 0; i < servicesData.length; i++) {
             let newIcon = document.getElementById(`sv_icon_${i}`)?.value;
             let newTitle = document.getElementById(`sv_title_${i}`)?.value;
@@ -599,7 +702,7 @@ function showPanel() {
         }
         saveData();
         render();
-        alert('✅ All changes saved successfully!');
+        alert('✅ All changes saved! Website updated instantly.');
     };
     
     document.getElementById('closeModal').onclick = () => modal.remove();
@@ -609,14 +712,11 @@ function showPanel() {
 function checkAdminHash() {
     if (window.location.hash === '#admin') {
         openAdmin();
-        // Remove hash to keep URL clean but panel stays open
         history.pushState(null, null, window.location.pathname);
     }
 }
 
-// Watch for hash changes
 window.addEventListener('hashchange', checkAdminHash);
-// Initial check
 checkAdminHash();
 
 // Smooth scroll
