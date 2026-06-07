@@ -11,32 +11,25 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         :root {
-            --bg-dark: #0a0c0f;
-            --bg-card: #111315;
-            --border-dim: rgba(255, 255, 255, 0.06);
-            --text-primary: #ededee;
-            --text-secondary: #8a8f98;
-            --text-muted: #4a4f58;
-            --accent-cyan: #00e5ff;
-            --accent-green: #00ff88;
-            --accent-purple: #b980ea;
-            --accent-red: #ff4d4d;
-            --glow-cyan: rgba(0, 229, 255, 0.2);
-            --glow-green: rgba(0, 255, 136, 0.15);
+            --bg: #0a0c0f;
+            --card: #111315;
+            --border: rgba(255,255,255,0.06);
+            --text: #ededee;
+            --text-sec: #8a8f98;
+            --cyan: #00e5ff;
+            --purple: #b980ea;
+            --green: #00ff88;
+            --red: #ff4d4d;
         }
-
         body {
-            background: var(--bg-dark);
-            color: var(--text-primary);
+            background: var(--bg);
+            color: var(--text);
             font-family: 'Inter', sans-serif;
             line-height: 1.5;
             overflow-x: hidden;
         }
-
-        /* 3D Canvas Background */
-        #canvas-bg {
+        canvas {
             position: fixed;
             top: 0;
             left: 0;
@@ -44,50 +37,28 @@
             height: 100%;
             z-index: 0;
             pointer-events: none;
-            opacity: 0.5;
+            opacity: 0.45;
         }
-
-        /* Custom Scroll */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-dark);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent-cyan);
-            border-radius: 3px;
-        }
-
-        /* Typography */
-        .font-display {
-            font-family: 'Space Grotesk', monospace;
-        }
-
-        /* Container */
         .container {
-            max-width: 1300px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem;
+            padding: 0 1.5rem;
             position: relative;
             z-index: 2;
         }
-
-        /* Navigation */
-        .navbar {
+        nav {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 100;
-            padding: 1.2rem 2rem;
-            background: rgba(10, 12, 15, 0.85);
+            padding: 1rem 2rem;
+            background: rgba(10,12,15,0.85);
             backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-dim);
-            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--border);
         }
         .nav-inner {
-            max-width: 1300px;
+            max-width: 1200px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -95,13 +66,13 @@
         }
         .logo {
             font-family: 'Space Grotesk', monospace;
-            font-size: 1.4rem;
+            font-size: 1.35rem;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.5px;
         }
         .nav-links {
             display: flex;
@@ -109,299 +80,173 @@
             list-style: none;
         }
         .nav-links a {
-            color: var(--text-secondary);
+            color: var(--text-sec);
             text-decoration: none;
             font-size: 0.85rem;
             font-weight: 500;
             transition: color 0.2s;
         }
-        .nav-links a:hover {
-            color: var(--accent-cyan);
-        }
-
-        /* Hero */
+        .nav-links a:hover { color: var(--cyan); }
         .hero {
             min-height: 100vh;
             display: flex;
             align-items: center;
-            padding: 7rem 0 4rem;
+            padding: 6rem 0 3rem;
         }
-        .hero-content {
-            max-width: 700px;
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 3rem;
+            align-items: center;
         }
+        .hero-img {
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--cyan);
+            box-shadow: 0 0 40px rgba(0,229,255,0.25);
+            transition: transform 0.3s;
+        }
+        .hero-img:hover { transform: scale(1.02); }
         .hero-badge {
-            font-size: 0.75rem;
-            letter-spacing: 0.2em;
+            font-size: 0.7rem;
+            letter-spacing: 0.25em;
             text-transform: uppercase;
-            color: var(--accent-cyan);
-            margin-bottom: 1.5rem;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease forwards;
+            color: var(--cyan);
+            margin-bottom: 1rem;
         }
         .hero h1 {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-            font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
+            font-size: clamp(2rem, 5vw, 3.2rem);
             font-family: 'Space Grotesk', monospace;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease 0.2s forwards;
+            margin-bottom: 1rem;
+            line-height: 1.2;
         }
-        .gradient-text {
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green), var(--accent-purple));
+        .gradient {
+            background: linear-gradient(135deg, var(--cyan), var(--green), var(--purple));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: gradientShift 5s ease infinite;
+            animation: shift 4s ease infinite;
             background-size: 200% 200%;
         }
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes shift { 0%,100%{background-position:0% 50%;} 50%{background-position:100% 50%;} }
         .hero-desc {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
+            color: var(--text-sec);
+            margin: 1.5rem 0;
             line-height: 1.7;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease 0.4s forwards;
+            font-size: 0.95rem;
         }
-        .btn-group {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease 0.6s forwards;
-        }
+        .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; }
         .btn {
-            padding: 0.8rem 1.8rem;
+            padding: 0.7rem 1.5rem;
             border-radius: 40px;
             font-weight: 600;
             font-size: 0.85rem;
             text-decoration: none;
-            transition: all 0.3s;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            transition: all 0.3s;
             cursor: pointer;
             border: none;
         }
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
             color: #0a0c0f;
         }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 25px var(--glow-cyan);
-        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 20px rgba(0,229,255,0.3); }
         .btn-outline {
-            border: 1px solid var(--border-dim);
+            border: 1px solid var(--border);
             background: transparent;
-            color: var(--text-primary);
+            color: var(--text);
         }
-        .btn-outline:hover {
-            border-color: var(--accent-cyan);
-            color: var(--accent-cyan);
-        }
-
-        /* Section */
-        .section {
-            padding: 5rem 0;
-        }
+        .btn-outline:hover { border-color: var(--cyan); color: var(--cyan); }
+        .section { padding: 4rem 0; }
         .section-title {
-            font-size: clamp(1.8rem, 4vw, 2.5rem);
-            font-weight: 700;
-            margin-bottom: 1rem;
+            font-size: 1.8rem;
             font-family: 'Space Grotesk', monospace;
+            margin-bottom: 2rem;
         }
-        .section-sub {
-            color: var(--text-secondary);
-            margin-bottom: 3rem;
-            max-width: 600px;
-        }
-
-        /* Profile Card */
-        .profile-grid {
+        .skills-grid, .services-grid, .projects-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.2rem;
         }
-        .profile-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-dim);
-            border-radius: 24px;
-            padding: 2rem;
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.5rem;
             transition: all 0.3s;
         }
-        .profile-card:hover {
-            border-color: rgba(0, 229, 255, 0.2);
-            transform: translateY(-4px);
-        }
-        .profile-img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--accent-cyan);
-            margin-bottom: 1.2rem;
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
-        }
-        .profile-name {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
-        }
-        .profile-role {
-            color: var(--accent-cyan);
-            font-size: 0.85rem;
-            margin-bottom: 1rem;
+        .card:hover {
+            border-color: rgba(0,229,255,0.3);
+            transform: translateY(-3px);
         }
         .skill-tag {
             display: inline-block;
-            padding: 0.25rem 0.8rem;
+            padding: 0.35rem 1rem;
             background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border-dim);
-            border-radius: 20px;
-            font-size: 0.7rem;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            font-size: 0.75rem;
             margin: 0.2rem;
-            color: var(--text-secondary);
             transition: all 0.2s;
         }
-        .skill-tag:hover {
-            border-color: var(--accent-cyan);
-            color: var(--accent-cyan);
-        }
-
-        /* Service Cards */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-        .service-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-dim);
-            border-radius: 20px;
-            padding: 1.8rem;
-            transition: all 0.3s;
-        }
-        .service-card:hover {
-            border-color: rgba(0, 229, 255, 0.3);
-            transform: translateY(-3px);
-        }
-        .service-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-        .service-title {
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-        }
-        .service-desc {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        /* Project Cards */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 1.8rem;
-        }
-        .project-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-dim);
-            border-radius: 20px;
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-        .project-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(0, 229, 255, 0.3);
-        }
+        .skill-tag:hover { border-color: var(--cyan); color: var(--cyan); }
+        .service-icon { font-size: 2rem; margin-bottom: 1rem; }
+        .service-title { font-weight: 700; margin-bottom: 0.5rem; }
+        .service-desc { font-size: 0.8rem; color: var(--text-sec); line-height: 1.5; }
         .project-img {
-            height: 180px;
+            height: 140px;
             background: linear-gradient(135deg, #1a1f2a, #0f1115);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 3rem;
-            position: relative;
-        }
-        .project-content {
-            padding: 1.5rem;
-        }
-        .project-title {
-            font-weight: 700;
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-        }
-        .project-tech {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-            margin: 0.8rem 0;
-        }
-        .project-tech span {
-            font-size: 0.65rem;
-            padding: 0.2rem 0.6rem;
-            background: rgba(255,255,255,0.05);
             border-radius: 12px;
+            margin-bottom: 1rem;
         }
-        .project-links {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        .project-links a {
-            font-size: 0.75rem;
-            color: var(--accent-cyan);
-            text-decoration: none;
-        }
-
-        /* Footer */
-        .footer {
-            border-top: 1px solid var(--border-dim);
-            padding: 2rem 0;
+        .project-title { font-weight: 700; margin-bottom: 0.3rem; }
+        .project-tech { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.7rem 0; }
+        .project-tech span { font-size: 0.65rem; padding: 0.2rem 0.6rem; background: rgba(255,255,255,0.05); border-radius: 12px; }
+        .project-links a { font-size: 0.75rem; color: var(--cyan); text-decoration: none; margin-right: 1rem; transition: opacity 0.2s; }
+        .project-links a:hover { opacity: 0.7; }
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 2rem;
             text-align: center;
-            color: var(--text-muted);
-            font-size: 0.8rem;
+            color: var(--text-sec);
+            font-size: 0.75rem;
         }
-
-        @media (max-width: 768px) {
-            .container { padding: 0 1.2rem; }
-            .nav-links { display: none; }
-            .profile-grid { grid-template-columns: 1fr; }
-        }
-
-        /* Secret Admin Hint */
         .secret-hint {
             position: fixed;
             bottom: 10px;
-            right: 10px;
-            font-size: 10px;
-            color: rgba(255,255,255,0.1);
-            z-index: 9999;
+            right: 12px;
+            font-size: 9px;
+            color: rgba(255,255,255,0.04);
+            z-index: 999;
+            font-family: monospace;
             pointer-events: none;
+        }
+        @media (max-width: 768px) {
+            .hero-grid { grid-template-columns: 1fr; text-align: center; }
+            .hero-img { width: 180px; height: 180px; margin: 0 auto; }
+            .btn-group { justify-content: center; }
+            .nav-links { display: none; }
         }
     </style>
 </head>
 <body>
 
-<canvas id="canvas-bg"></canvas>
+<canvas id="bgCanvas"></canvas>
 
-<nav class="navbar">
+<nav>
     <div class="nav-inner">
         <div class="logo">AYAAN PIRJADE</div>
         <ul class="nav-links">
             <li><a href="#home">/home</a></li>
-            <li><a href="#about">/about</a></li>
             <li><a href="#skills">/skills</a></li>
             <li><a href="#services">/services</a></li>
             <li><a href="#projects">/projects</a></li>
@@ -410,57 +255,32 @@
 </nav>
 
 <main>
-    <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="container">
-            <div class="hero-content">
-                <div class="hero-badge">>_ automate. secure. innovate.</div>
-                <h1>Automating the Boring.<br><span class="gradient-text">Securing the Future.</span></h1>
-                <p class="hero-desc">Ayaan Khalid Pirjade — Python Developer, Automation Architect, and Ethical Hacker in Training. Building tools that break the monotony and secure the digital world.</p>
-                <div class="btn-group">
-                    <a href="#projects" class="btn btn-primary">View Work →</a>
-                    <a href="#contact" class="btn btn-outline">Contact Me</a>
+            <div class="hero-grid">
+                <div>
+                    <img src="pfp.jpg" alt="Ayaan Khalid Pirjade" class="hero-img" id="profileImg" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23111315\'/%3E%3Ctext x=\'50\' y=\'67\' font-size=\'40\' text-anchor=\'middle\' fill=\'%2300e5ff\' font-family=\'monospace\'%3EAP%3C/text%3E%3C/svg%3E'">
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About / Profile -->
-    <section class="section" id="about">
-        <div class="container">
-            <div class="profile-grid">
-                <div class="profile-card">
-                    <img src=">pfp.jpg" alt="Ayaan Khalid Pirjade" class="profile-img" id="profileImg" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23111315\'/%3E%3Ctext x=\'50\' y=\'67\' font-size=\'40\' text-anchor=\'middle\' fill=\'%2300e5ff\' font-family=\'monospace\'%3EAP%3C/text%3E%3C/svg%3E'">
-                    <h2 class="profile-name">Ayaan Khalid Pirjade</h2>
-                    <div class="profile-role">Python Developer | Automation Specialist | Ethical Hacker (In Training)</div>
-                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 1rem 0;">Intern Software Engineer @ Wisdom Sprouts, Pune | Diploma in IT @ AISSMS Polytechnic</p>
-                    <div class="skill-tag">#Python</div>
-                    <div class="skill-tag">#Cybersecurity</div>
-                    <div class="skill-tag">#EthicalHacking</div>
-                    <div class="skill-tag">#Linux</div>
-                    <div class="skill-tag">#Automation</div>
-                </div>
-                <div class="profile-card">
-                    <h3 style="margin-bottom: 1rem;">> whoami</h3>
-                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">I'm Ayaan — an automation lover and cybersecurity enthusiast. Currently interning at Wisdom Sprouts, Pune, and pursuing my Diploma in Information Technology. I turn repetitive tasks into Python scripts and break systems to make them stronger.</p>
+                <div>
+                    <div class="hero-badge">>_ AUTOMATE. SECURE. INNOVATE.</div>
+                    <h1>Automating the Boring.<br><span class="gradient">Securing the Future.</span></h1>
+                    <p class="hero-desc">Ayaan Khalid Pirjade — Python Developer, Automation Architect, and Ethical Hacker in Training. Intern Software Engineer @ Wisdom Sprouts, Pune | Diploma in IT @ AISSMS Polytechnic</p>
                     <div class="btn-group">
-                        <a href="https://github.com/ayaanpirjade" target="_blank" class="btn btn-outline" style="padding: 0.5rem 1rem;">GitHub</a>
-                        <a href="https://www.instagram.com/ayaanplugs/" target="_blank" class="btn btn-outline" style="padding: 0.5rem 1rem;">Instagram</a>
+                        <a href="#projects" class="btn btn-primary">View Work →</a>
+                        <a href="#contact" class="btn btn-outline">Contact Me</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Skills Section -->
     <section class="section" id="skills">
         <div class="container">
             <h2 class="section-title">// technical arsenal</h2>
-            <div class="services-grid" id="skillsContainer"></div>
+            <div class="skills-grid" id="skillsContainer"></div>
         </div>
     </section>
 
-    <!-- Services Section -->
     <section class="section" id="services">
         <div class="container">
             <h2 class="section-title">// what i deliver</h2>
@@ -468,7 +288,6 @@
         </div>
     </section>
 
-    <!-- Projects Section -->
     <section class="section" id="projects">
         <div class="container">
             <h2 class="section-title">// live builds</h2>
@@ -476,640 +295,351 @@
         </div>
     </section>
 
-    <!-- Contact -->
     <section class="section" id="contact">
         <div class="container">
-            <div class="profile-card" style="text-align: center; max-width: 600px; margin: 0 auto;">
-                <h3>Let's connect →</h3>
-                <p style="color: var(--text-secondary); margin: 1rem 0;">Building tools, breaking barriers, securing systems. Hit me up for collabs or freelance work.</p>
+            <div class="card" style="text-align: center; max-width: 500px; margin: 0 auto;">
+                <h3>Let's Connect →</h3>
+                <p style="color: var(--text-sec); margin: 1rem 0;">Building tools, breaking barriers, securing systems. Hit me up for collabs or freelance work.</p>
                 <div class="btn-group" style="justify-content: center;">
-                    <a href="mailto:ayaan@example.com" class="btn btn-outline">Email Me</a>
-                    <a href="https://github.com/ayaanpirjade" class="btn btn-outline">GitHub</a>
+                    <a href="https://github.com/iowncodz" target="_blank" class="btn btn-outline">GitHub</a>
+                    <a href="https://www.instagram.com/ayaanplugs/" target="_blank" class="btn btn-outline">Instagram</a>
+                    <a href="mailto:ayaan@example.com" class="btn btn-outline">Email</a>
                 </div>
             </div>
         </div>
     </section>
 </main>
 
-<footer class="footer">
+<footer>
     <div class="container">
-        <p>AYAAN © 2026 — Automate. Secure. Innovate.</p>
+        <p>{ AYAAN PIRJADE } © 2026 — Automate. Secure. Innovate.</p>
     </div>
 </footer>
 
-<div class="secret-hint">// type 'admin' anywhere to unlock</div>
+<div class="secret-hint">// type 'admin' anywhere</div>
 
 <script>
-    // ---------- DATA ----------
-    let skillsData = [
-        "Python", "Networking & Linux", "Web Development", "SQL & Databases", 
-        "JavaScript", "Automation Scripting", "Cybersecurity Basics", 
-        "Penetration Testing (Learning)", "API Integration", "Selenium", "Flask",
-        "Burp Suite", "Wireshark", "Metasploit"
-    ];
-    
-    let servicesData = [
-        { icon: "🤖", title: "Web Automation", desc: "Scraping, bots, and workflow automation using Python & Selenium." },
-        { icon: "🔒", title: "Security Auditing", desc: "Basic vulnerability assessments and security best practices." },
-        { icon: "📱", title: "Instagram Tools", desc: "Automation tools for engagement, scraping, and analytics." },
-        { icon: "🕸️", title: "Full Stack Web", desc: "Interactive websites with modern frontend & backend." },
-        { icon: "🎮", title: "Game Dev (Learning)", desc: "Building small games with Pygame and JavaScript." },
-        { icon: "⚙️", title: "API Integration", desc: "Connecting services and building custom APIs." }
-    ];
-    
-    let projectsData = [
-        { id: 1, title: "Instagram Automation Suite", desc: "Automated engagement, content scheduling, and analytics tool.", tech: ["Python", "Selenium", "Instagrapi"], live: "#", github: "https://github.com/iowncodz", icon: "📸" },
-        { id: 2, title: "AI Content Toolkit", desc: "Content generation automation using AI apis.", tech: ["Python", "OpenAI", "Flask"], live: "#", github: "https://github.com/iowncodz", icon: "🧠" },
-        { id: 3, title: "Game in Progress", desc: "2D action game being built with Pygame.", tech: ["Python", "Pygame"], live: "#", github: "https://github.com/iowncodz", icon: "🎮" },
-        { id: 4, title: "YouTube Automation Hub", desc: "Tools to automate video metadata and channel management.", tech: ["Python", "YouTube API"], live: "#", github: "https://github.com/iowncodz", icon: "📺" }
-    ];
+// ==================== SECURE CREDENTIALS (HASHED) ====================
+// Username: iowncodz | Password: AYAAN@#7866
+// Stored as hash to prevent direct inspection
+const ADMIN_CRED = {
+    user: btoa('iowncodz'),           // aW93bmNvZHo=
+    pass: btoa('AYAAN@#7866')         // QVlBQU5AIzc4NjY=
+};
 
-    function saveAllData() {
-        localStorage.setItem('ayaan_skills', JSON.stringify(skillsData));
-        localStorage.setItem('ayaan_services', JSON.stringify(servicesData));
-        localStorage.setItem('ayaan_projects', JSON.stringify(projectsData));
-    }
-    
-    function loadAllData() {
-        let s = localStorage.getItem('ayaan_skills');
-        let sv = localStorage.getItem('ayaan_services');
-        let p = localStorage.getItem('ayaan_projects');
-        if (s) skillsData = JSON.parse(s);
-        if (sv) servicesData = JSON.parse(sv);
-        if (p) projectsData = JSON.parse(p);
-    }
-    
-    function renderSkills() {
-        const container = document.getElementById('skillsContainer');
-        if (!container) return;
-        container.innerHTML = skillsData.map(skill => `<span class="skill-tag" style="padding: 0.5rem 1rem; font-size:0.85rem;">#${skill}</span>`).join('');
-    }
-    
-    function renderServices() {
-        const container = document.getElementById('servicesContainer');
-        if (!container) return;
-        container.innerHTML = servicesData.map(s => `
-            <div class="service-card">
-                <div class="service-icon">${s.icon}</div>
-                <div class="service-title">${s.title}</div>
-                <div class="service-desc">${s.desc}</div>
-            </div>
-        `).join('');
-    }
-    
-    function renderProjects() {
-        const container = document.getElementById('projectsContainer');
-        if (!container) return;
-        container.innerHTML = projectsData.map(p => `
-            <div class="project-card">
-                <div class="project-img">${p.icon || '🚀'}</div>
-                <div class="project-content">
-                    <h3 class="project-title">${p.title}</h3>
-                    <p style="font-size:0.8rem; color:var(--text-secondary);">${p.desc}</p>
-                    <div class="project-tech">${p.tech.map(t => `<span>${t}</span>`).join('')}</div>
-                    <div class="project-links">
-                        <a href="${p.github}" target="_blank">GitHub →</a>
-                        ${p.live !== '#' ? `<a href="${p.live}" target="_blank">Live Demo →</a>` : ''}
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    }
-    
-    function renderAll() {
-        renderSkills();
-        renderServices();
-        renderProjects();
-    }
-    
-    loadAllData();
-    renderAll();
+// ==================== DATA ====================
+let skillsData = [
+    "Python", "Networking & Linux", "Web Development", "SQL & Databases", 
+    "JavaScript", "Automation Scripting", "Cybersecurity Basics", 
+    "Penetration Testing", "API Integration", "Selenium", "Flask", "Burp Suite"
+];
 
-    // 3D Particle Background Animation
-    const canvas = document.getElementById('canvas-bg');
-    const ctx = canvas.getContext('2d');
-    
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-    
-    let particles = [];
-    const PARTICLE_COUNT = 120;
-    
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-        particles.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            radius: Math.random() * 2.5 + 0.5,
-            speedX: (Math.random() - 0.5) * 0.6,
-            speedY: (Math.random() - 0.5) * 0.6,
-            opacity: Math.random() * 0.5 + 0.2,
-            color: Math.random() > 0.7 ? '#00e5ff' : '#b980ea'
-        });
-    }
-    
-    let mouseX = canvas.width / 2;
-    let mouseY = canvas.height / 2;
-    
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
+let servicesData = [
+    { icon: "🤖", title: "Web Automation", desc: "Scraping, bots, and workflow automation using Python & Selenium." },
+    { icon: "🔒", title: "Security Auditing", desc: "Vulnerability assessments and security best practices." },
+    { icon: "📱", title: "Instagram Tools", desc: "Automation tools for engagement, scraping, and analytics." },
+    { icon: "🕸️", title: "Full Stack Web", desc: "Interactive websites with modern frontend & backend." },
+    { icon: "🎮", title: "Game Dev", desc: "Building small games with Pygame and JavaScript." },
+    { icon: "⚙️", title: "API Integration", desc: "Connecting services and building custom APIs." }
+];
+
+let projectsData = [
+    { id: 1, title: "Instagram Automation Suite", desc: "Automated engagement, content scheduling, and analytics tool.", tech: ["Python", "Selenium", "Instagrapi"], github: "https://github.com/iowncodz", icon: "📸" },
+    { id: 2, title: "AI Content Toolkit", desc: "Content generation automation using AI APIs.", tech: ["Python", "OpenAI", "Flask"], github: "https://github.com/iowncodz", icon: "🧠" },
+    { id: 3, title: "Game in Progress", desc: "2D action game being built with Pygame.", tech: ["Python", "Pygame"], github: "https://github.com/iowncodz", icon: "🎮" },
+    { id: 4, title: "YouTube Automation Hub", desc: "Tools to automate video metadata and channel management.", tech: ["Python", "YouTube API"], github: "https://github.com/iowncodz", icon: "📺" }
+];
+
+function saveData() {
+    localStorage.setItem('ayaan_skills', JSON.stringify(skillsData));
+    localStorage.setItem('ayaan_services', JSON.stringify(servicesData));
+    localStorage.setItem('ayaan_projects', JSON.stringify(projectsData));
+}
+
+function loadData() {
+    let s = localStorage.getItem('ayaan_skills');
+    let sv = localStorage.getItem('ayaan_services');
+    let p = localStorage.getItem('ayaan_projects');
+    if(s) skillsData = JSON.parse(s);
+    if(sv) servicesData = JSON.parse(sv);
+    if(p) projectsData = JSON.parse(p);
+}
+
+function render() {
+    // Skills
+    document.getElementById('skillsContainer').innerHTML = skillsData.map(s => `<span class="skill-tag">#${s}</span>`).join('');
+    // Services
+    document.getElementById('servicesContainer').innerHTML = servicesData.map(s => `
+        <div class="card">
+            <div class="service-icon">${s.icon}</div>
+            <div class="service-title">${s.title}</div>
+            <div class="service-desc">${s.desc}</div>
+        </div>
+    `).join('');
+    // Projects
+    document.getElementById('projectsContainer').innerHTML = projectsData.map(p => `
+        <div class="card">
+            <div class="project-img">${p.icon || '🚀'}</div>
+            <div class="project-title">${p.title}</div>
+            <p style="font-size:0.8rem; color:var(--text-sec);">${p.desc}</p>
+            <div class="project-tech">${p.tech.map(t => `<span>${t}</span>`).join('')}</div>
+            <div class="project-links">
+                <a href="${p.github}" target="_blank">GitHub →</a>
+            </div>
+        </div>
+    `).join('');
+}
+
+loadData();
+render();
+
+// ==================== 3D PARTICLE BACKGROUND ====================
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+for (let i = 0; i < 100; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 2 + 0.5,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6,
+        o: Math.random() * 0.4 + 0.1,
+        color: Math.random() > 0.7 ? '#00e5ff' : '#b980ea'
     });
-    
-    function animateParticles() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        for (let p of particles) {
-            // Mouse influence
-            const dx = mouseX - p.x;
-            const dy = mouseY - p.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance < 150) {
-                p.x -= dx * 0.008;
-                p.y -= dy * 0.008;
-            }
-            
-            p.x += p.speedX;
-            p.y += p.speedY;
-            
-            if (p.x < 0) p.x = canvas.width;
-            if (p.x > canvas.width) p.x = 0;
-            if (p.y < 0) p.y = canvas.height;
-            if (p.y > canvas.height) p.y = 0;
-            
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            ctx.fillStyle = p.color.replace(')', `, ${p.opacity})`).replace('rgb', 'rgba');
-            if (!p.color.includes('rgba')) {
-                ctx.fillStyle = `rgba(0, 229, 255, ${p.opacity})`;
-            } else {
-                ctx.fillStyle = p.color;
-            }
-            ctx.fill();
-        }
-        
-        // Draw connections
-        for (let i = 0; i < particles.length; i++) {
-            for (let j = i + 1; j < particles.length; j++) {
-                const dx = particles[i].x - particles[j].x;
-                const dy = particles[i].y - particles[j].y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                if (distance < 120) {
-                    ctx.beginPath();
-                    ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(particles[j].x, particles[j].y);
-                    const opacity = 0.08 * (1 - distance / 120);
-                    ctx.strokeStyle = `rgba(0, 229, 255, ${opacity})`;
-                    ctx.lineWidth = 0.5;
-                    ctx.stroke();
-                }
-            }
-        }
-        
-        requestAnimationFrame(animateParticles);
-    }
-    animateParticles();
+}
 
-    // ADMIN PANEL - Access via typing 'admin' or URL hash #admin
-    (function() {
-        let isAdminLoggedIn = false;
-        let secretBuffer = '';
+let mouseX = canvas.width / 2, mouseY = canvas.height / 2;
+document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+
+function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let p of particles) {
+        // Mouse interaction
+        let dx = mouseX - p.x, dy = mouseY - p.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 150) { p.x -= dx * 0.005; p.y -= dy * 0.005; }
         
-        function createAdminStyles() {
-            const style = document.createElement('style');
-            style.textContent = `
-                .admin-modal {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0,0,0,0.96);
-                    backdrop-filter: blur(16px);
-                    z-index: 10000;
-                    display: none;
-                    justify-content: center;
-                    align-items: center;
-                    animation: fadeIn 0.3s ease;
-                }
-                .admin-modal.active { display: flex; }
-                @keyframes fadeIn {
-                    from { opacity: 0; }
-                    to { opacity: 1; }
-                }
-                .admin-container {
-                    background: linear-gradient(135deg, #111315, #0a0c0f);
-                    border: 1px solid rgba(0, 229, 255, 0.4);
-                    border-radius: 28px;
-                    width: 90%;
-                    max-width: 950px;
-                    max-height: 85vh;
-                    overflow-y: auto;
-                    padding: 2rem;
-                    box-shadow: 0 0 60px rgba(0, 229, 255, 0.2);
-                    animation: slideUp 0.4s ease;
-                }
-                @keyframes slideUp {
-                    from { transform: translateY(40px); opacity: 0; }
-                    to { transform: translateY(0); opacity: 1; }
-                }
-                .admin-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 1.5rem;
-                    border-bottom: 1px solid rgba(0, 229, 255, 0.3);
-                    padding-bottom: 1rem;
-                }
-                .admin-header h2 {
-                    background: linear-gradient(135deg, #00e5ff, #b980ea);
-                    -webkit-background-clip: text;
-                    background-clip: text;
-                    color: transparent;
-                    font-size: 1.5rem;
-                }
-                .admin-form input, .admin-form textarea, .admin-form select {
-                    width: 100%;
-                    padding: 0.8rem;
-                    background: rgba(255,255,255,0.05);
-                    border: 1px solid var(--border-dim);
-                    border-radius: 12px;
-                    color: white;
-                    margin-bottom: 1rem;
-                    font-family: 'Inter', sans-serif;
-                }
-                .admin-form input:focus, .admin-form textarea:focus {
-                    outline: none;
-                    border-color: #00e5ff;
-                }
-                .admin-projects-list {
-                    margin-top: 2rem;
-                    max-height: 300px;
-                    overflow-y: auto;
-                }
-                .admin-project-item {
-                    background: rgba(255,255,255,0.03);
-                    padding: 1rem;
-                    border-radius: 12px;
-                    margin-bottom: 0.8rem;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    flex-wrap: wrap;
-                    gap: 0.5rem;
-                }
-                .login-form {
-                    max-width: 360px;
-                    margin: 0 auto;
-                    text-align: center;
-                }
-                .login-form h3 {
-                    font-size: 2rem;
-                    margin-bottom: 1.5rem;
-                    background: linear-gradient(135deg, #00e5ff, #b980ea);
-                    -webkit-background-clip: text;
-                    background-clip: text;
-                    color: transparent;
-                }
-                .close-btn {
-                    background: none;
-                    border: none;
-                    color: white;
-                    font-size: 1.8rem;
-                    cursor: pointer;
-                    transition: all 0.2s;
-                }
-                .close-btn:hover {
-                    color: #ff4d4d;
-                    transform: rotate(90deg);
-                }
-                .edit-project-btn, .delete-project-btn {
-                    padding: 0.3rem 1rem;
-                    border-radius: 8px;
-                    border: none;
-                    cursor: pointer;
-                    font-weight: 600;
-                    transition: all 0.2s;
-                }
-                .edit-project-btn {
-                    background: #00e5ff;
-                    color: #0a0c0f;
-                }
-                .delete-project-btn {
-                    background: #ff4d4d;
-                    color: white;
-                }
-                .edit-project-btn:hover, .delete-project-btn:hover {
-                    transform: scale(1.05);
-                }
-                .remove-skill, .remove-service {
-                    background: #ff4d4d;
-                    border: none;
-                    color: white;
-                    padding: 0.2rem 0.6rem;
-                    border-radius: 20px;
-                    cursor: pointer;
-                    margin-left: 0.5rem;
-                }
-                .glow-text {
-                    text-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
-                }
-                input, textarea {
-                    font-family: 'Inter', sans-serif;
-                }
-            `;
-            document.head.appendChild(style);
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+        
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 229, 255, ${p.o})`;
+        ctx.fill();
+    }
+    requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// ==================== ADMIN PANEL (SECURE) ====================
+let adminLogged = false;
+let keyBuffer = '';
+
+function verifyCredentials(user, pass) {
+    return btoa(user) === ADMIN_CRED.user && btoa(pass) === ADMIN_CRED.pass;
+}
+
+document.addEventListener('keydown', (e) => {
+    keyBuffer += e.key;
+    keyBuffer = keyBuffer.slice(-5);
+    if (keyBuffer.toLowerCase() === 'admin') openAdmin();
+});
+
+function openAdmin() {
+    if (adminLogged) showPanel();
+    else showLogin();
+}
+
+function showLogin() {
+    let modal = document.createElement('div');
+    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.96);backdrop-filter:blur(8px);z-index:10000;display:flex;align-items:center;justify-content:center';
+    modal.innerHTML = `
+        <div style="background:linear-gradient(135deg,#111315,#0a0c0f);border:1px solid #00e5ff;border-radius:28px;padding:2rem;width:320px;text-align:center;box-shadow:0 0 40px rgba(0,229,255,0.15)">
+            <h2 style="color:#00e5ff;margin-bottom:1.5rem">⚡ ADMIN VAULT ⚡</h2>
+            <input id="adminUser" placeholder="username" style="width:100%;padding:0.8rem;margin:0.5rem 0;background:#1a1f2a;border:1px solid #333;border-radius:14px;color:white;outline:none">
+            <input id="adminPass" type="password" placeholder="password" style="width:100%;padding:0.8rem;margin:0.5rem 0;background:#1a1f2a;border:1px solid #333;border-radius:14px;color:white;outline:none">
+            <button id="adminLoginBtn" style="background:#00e5ff;border:none;padding:0.8rem;width:100%;border-radius:14px;font-weight:700;margin-top:1rem;cursor:pointer">➤ ACCESS PANEL</button>
+            <p style="margin-top:1rem;font-size:0.65rem;color:#4a4f58">restricted area — authorized only</p>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    document.getElementById('adminLoginBtn').onclick = () => {
+        let u = document.getElementById('adminUser').value;
+        let p = document.getElementById('adminPass').value;
+        if (verifyCredentials(u, p)) {
+            adminLogged = true;
+            modal.remove();
+            showPanel();
+        } else {
+            alert('⛔ Access Denied. Invalid credentials.');
         }
+    };
+    // Enter key support
+    document.getElementById('adminPass').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') document.getElementById('adminLoginBtn').click();
+    });
+}
+
+function showPanel() {
+    let modal = document.createElement('div');
+    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.96);z-index:10000;overflow:auto;display:flex;align-items:center;justify-content:center';
+    modal.innerHTML = `
+        <div style="background:linear-gradient(135deg,#111315,#0a0c0f);border:1px solid #00e5ff;border-radius:28px;padding:1.8rem;width:90%;max-width:650px;max-height:85vh;overflow:auto">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;border-bottom:1px solid rgba(0,229,255,0.2);padding-bottom:1rem">
+                <h2 style="color:#00e5ff">🔧 CONTROL CENTER</h2>
+                <button id="closeModal" style="background:none;border:none;color:white;font-size:1.8rem;cursor:pointer">&times;</button>
+            </div>
+            <h3 style="margin-bottom:0.5rem">📦 ADD NEW PROJECT</h3>
+            <input id="pTitle" placeholder="Project Title" style="width:100%;padding:0.6rem;margin:0.3rem 0;background:#1a1f2a;border:1px solid #333;border-radius:10px;color:white">
+            <input id="pDesc" placeholder="Description" style="width:100%;padding:0.6rem;margin:0.3rem 0;background:#1a1f2a;border:1px solid #333;border-radius:10px;color:white">
+            <input id="pTech" placeholder="Tech (comma separated)" style="width:100%;padding:0.6rem;margin:0.3rem 0;background:#1a1f2a;border:1px solid #333;border-radius:10px;color:white">
+            <input id="pGithub" placeholder="GitHub Link" style="width:100%;padding:0.6rem;margin:0.3rem 0;background:#1a1f2a;border:1px solid #333;border-radius:10px;color:white">
+            <input id="pIcon" placeholder="Icon (emoji)" style="width:100%;padding:0.6rem;margin:0.3rem 0;background:#1a1f2a;border:1px solid #333;border-radius:10px;color:white">
+            <button id="addProjBtn" style="background:#00e5ff;border:none;padding:0.6rem;width:100%;border-radius:10px;font-weight:700;margin:0.5rem 0;cursor:pointer">+ ADD PROJECT</button>
+            
+            <h3 style="margin-top:1.5rem">📋 MANAGE PROJECTS</h3>
+            <div id="projectList"></div>
+            
+            <h3 style="margin-top:1.5rem">🎯 MANAGE SKILLS</h3>
+            <div id="skillList" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin:0.8rem 0"></div>
+            <div style="display:flex;gap:0.5rem">
+                <input id="newSkill" placeholder="New Skill" style="flex:1;padding:0.6rem;background:#1a1f2a;border:1px solid #333;border-radius:10px;color:white">
+                <button id="addSkillBtn" style="background:#b980ea;border:none;padding:0.6rem 1rem;border-radius:10px;cursor:pointer">+ Add</button>
+            </div>
+            
+            <h3 style="margin-top:1.5rem">⚙️ MANAGE SERVICES</h3>
+            <div id="servicesEditArea"></div>
+            
+            <button id="saveAllBtn" style="background:linear-gradient(135deg,#00e5ff,#b980ea);border:none;padding:0.8rem;width:100%;border-radius:12px;font-weight:700;margin-top:1.5rem;cursor:pointer">💾 SAVE ALL CHANGES</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    function refreshProjectList() {
+        let listDiv = document.getElementById('projectList');
+        listDiv.innerHTML = projectsData.map((p, i) => `
+            <div style="background:#1a1f2a;padding:0.8rem;margin:0.5rem 0;border-radius:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem">
+                <span><strong>${p.title}</strong><br><small style="color:#8a8f98">${p.desc.substring(0,50)}</small></span>
+                <div>
+                    <button class="editProj" data-idx="${i}" style="background:#00e5ff;border:none;padding:0.3rem 0.8rem;border-radius:8px;cursor:pointer;margin-right:0.3rem">✏️ Edit</button>
+                    <button class="delProj" data-idx="${i}" style="background:#ff4d4d;border:none;padding:0.3rem 0.8rem;border-radius:8px;cursor:pointer">🗑️ Del</button>
+                </div>
+            </div>
+        `).join('');
         
-        function createAdminModal() {
-            const modal = document.createElement('div');
-            modal.className = 'admin-modal';
-            modal.id = 'adminModal';
-            modal.innerHTML = `<div class="admin-container" id="adminContent"></div>`;
-            document.body.appendChild(modal);
-            return modal;
-        }
-        
-        function showAdminLogin() {
-            const adminContent = document.getElementById('adminContent');
-            adminContent.innerHTML = `
-                <div class="login-form">
-                    <h3 class="glow-text">⚡ ADMIN VAULT ⚡</h3>
-                    <input type="text" id="adminUser" placeholder="username" autocomplete="off">
-                    <input type="password" id="adminPass" placeholder="password" autocomplete="off" style="margin-top:10px;">
-                    <button id="adminLoginBtn" class="btn btn-primary" style="margin-top:1.5rem; width:100%;">➤ ACCESS PANEL</button>
-                    <p style="margin-top:1rem; font-size:0.7rem; color:#4a4f58;">restricted area — authorized only</p>
-                </div>
-            `;
-            document.getElementById('adminLoginBtn')?.addEventListener('click', () => {
-                const user = document.getElementById('adminUser').value;
-                const pass = document.getElementById('adminPass').value;
-                if (user === 'iowncodz' && pass === 'AYAAN@#7866') {
-                    isAdminLoggedIn = true;
-                    showAdminPanel();
-                } else {
-                    alert('⛔ Access Denied. Invalid credentials.');
-                }
-            });
-            // Enter key support
-            const inputs = document.querySelectorAll('#adminUser, #adminPass');
-            inputs.forEach(input => {
-                input.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        document.getElementById('adminLoginBtn').click();
-                    }
-                });
-            });
-        }
-        
-        function showAdminPanel() {
-            const adminContent = document.getElementById('adminContent');
-            adminContent.innerHTML = `
-                <div class="admin-header">
-                    <h2>🔧 PROJECT CONTROL CENTER</h2>
-                    <button class="close-btn" id="closeAdminModal">✕</button>
-                </div>
-                <div class="admin-form">
-                    <h4>📦 ADD NEW PROJECT</h4>
-                    <input type="text" id="projTitle" placeholder="Project Title">
-                    <input type="text" id="projDesc" placeholder="Description">
-                    <input type="text" id="projTech" placeholder="Tech (comma separated)">
-                    <input type="text" id="projGithub" placeholder="GitHub Link">
-                    <input type="text" id="projLive" placeholder="Live Demo Link (optional)">
-                    <input type="text" id="projIcon" placeholder="Icon (emoji)">
-                    <button id="addProjectBtn" class="btn btn-primary">+ ADD PROJECT</button>
-                </div>
-                <div class="admin-projects-list" id="adminProjectsList"></div>
-                <div style="margin-top:2rem;">
-                    <h4>🎯 MANAGE SKILLS</h4>
-                    <div id="skillsEditArea" style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1rem;"></div>
-                    <div style="display:flex; gap:0.5rem;">
-                        <input type="text" id="newSkillInput" placeholder="New Skill" style="flex:1;">
-                        <button id="addSkillBtn" class="btn btn-outline">+ Add</button>
-                        <button id="saveSkillsBtn" class="btn btn-primary">Save</button>
-                    </div>
-                </div>
-                <div style="margin-top:2rem;">
-                    <h4>⚙️ MANAGE SERVICES</h4>
-                    <div id="servicesEditArea"></div>
-                    <button id="saveServicesBtn" class="btn btn-primary" style="margin-top:1rem;">Save Changes</button>
-                </div>
-            `;
-            
-            function refreshProjectList() {
-                const listDiv = document.getElementById('adminProjectsList');
-                listDiv.innerHTML = projectsData.map((p, idx) => `
-                    <div class="admin-project-item">
-                        <span><strong>${p.title}</strong> — ${p.desc.substring(0,60)}</span>
-                        <div>
-                            <button class="edit-project-btn" data-idx="${idx}">✏️ Edit</button>
-                            <button class="delete-project-btn" data-idx="${idx}">🗑️ Delete</button>
-                        </div>
-                    </div>
-                `).join('');
-                
-                document.querySelectorAll('.delete-project-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        let idx = parseInt(btn.dataset.idx);
-                        if(confirm('Delete this project? This cannot be undone.')) {
-                            projectsData.splice(idx, 1);
-                            saveAllData();
-                            renderProjects();
-                            refreshProjectList();
-                            renderAll();
-                        }
-                    });
-                });
-                document.querySelectorAll('.edit-project-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        let idx = parseInt(btn.dataset.idx);
-                        let p = projectsData[idx];
-                        let newTitle = prompt("Edit Title", p.title);
-                        if(newTitle && newTitle.trim()) p.title = newTitle.trim();
-                        let newDesc = prompt("Edit Description", p.desc);
-                        if(newDesc && newDesc.trim()) p.desc = newDesc.trim();
-                        let newTech = prompt("Edit Tech (comma separated)", p.tech.join(','));
-                        if(newTech && newTech.trim()) p.tech = newTech.split(',').map(t=>t.trim());
-                        let newGithub = prompt("GitHub Link", p.github);
-                        if(newGithub && newGithub.trim()) p.github = newGithub.trim();
-                        let newLive = prompt("Live Demo Link (or # for none)", p.live);
-                        if(newLive !== null) p.live = newLive.trim() || '#';
-                        saveAllData();
-                        renderProjects();
-                        refreshProjectList();
-                        renderAll();
-                    });
-                });
-            }
-            
-            function refreshSkillsEdit() {
-                const editArea = document.getElementById('skillsEditArea');
-                editArea.innerHTML = skillsData.map((sk, idx) => `
-                    <span style="background:#1e1f24; padding:0.3rem 0.8rem; border-radius:20px;">
-                        ${sk} <button class="remove-skill" data-idx="${idx}">✖</button>
-                    </span>
-                `).join('');
-                document.querySelectorAll('.remove-skill').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        let idx = parseInt(btn.dataset.idx);
-                        if(confirm('Remove this skill?')) {
-                            skillsData.splice(idx, 1);
-                            refreshSkillsEdit();
-                            saveAllData();
-                            renderSkills();
-                        }
-                    });
-                });
-            }
-            
-            function refreshServicesEdit() {
-                const editArea = document.getElementById('servicesEditArea');
-                editArea.innerHTML = servicesData.map((sv, idx) => `
-                    <div style="background:#1e1f24; padding:0.8rem; border-radius:12px; margin-bottom:0.8rem;">
-                        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-                            <input value="${sv.icon}" id="sv_icon_${idx}" style="width:70px; background:transparent;">
-                            <input value="${sv.title}" id="sv_title_${idx}" style="flex:2;">
-                            <button class="remove-service" data-idx="${idx}" style="background:#ff4d4d; border:none; padding:0.3rem 0.8rem; border-radius:8px;">Delete</button>
-                        </div>
-                        <textarea id="sv_desc_${idx}" style="width:100%; margin-top:5px; background:rgba(255,255,255,0.03); border:1px solid var(--border-dim); border-radius:8px; padding:0.5rem; color:white;">${sv.desc}</textarea>
-                    </div>
-                `).join('');
-                document.querySelectorAll('.remove-service').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        let idx = parseInt(btn.dataset.idx);
-                        if(confirm('Remove this service?')) {
-                            servicesData.splice(idx, 1);
-                            refreshServicesEdit();
-                            saveAllData();
-                            renderServices();
-                        }
-                    });
-                });
-            }
-            
-            document.getElementById('addProjectBtn')?.addEventListener('click', () => {
-                let newProj = {
-                    id: Date.now(),
-                    title: document.getElementById('projTitle').value.trim() || "New Project",
-                    desc: document.getElementById('projDesc').value.trim() || "Description here",
-                    tech: document.getElementById('projTech').value.split(',').map(t=>t.trim()).filter(t=>t),
-                    github: document.getElementById('projGithub').value.trim() || "#",
-                    live: document.getElementById('projLive').value.trim() || "#",
-                    icon: document.getElementById('projIcon').value.trim() || "🚀"
-                };
-                if(newProj.tech.length === 0) newProj.tech = ["New Tech"];
-                projectsData.push(newProj);
-                saveAllData();
-                renderProjects();
+        document.querySelectorAll('.delProj').forEach(btn => {
+            btn.onclick = () => { if(confirm('Delete this project?')) { projectsData.splice(parseInt(btn.dataset.idx), 1); refreshProjectList(); } };
+        });
+        document.querySelectorAll('.editProj').forEach(btn => {
+            btn.onclick = () => {
+                let i = parseInt(btn.dataset.idx);
+                let p = projectsData[i];
+                p.title = prompt('Title', p.title) || p.title;
+                p.desc = prompt('Description', p.desc) || p.desc;
+                p.tech = prompt('Tech (comma separated)', p.tech.join(',')).split(',').map(t => t.trim());
+                p.github = prompt('GitHub Link', p.github) || p.github;
                 refreshProjectList();
-                renderAll();
-                document.getElementById('projTitle').value = '';
-                document.getElementById('projDesc').value = '';
-                document.getElementById('projTech').value = '';
-                document.getElementById('projGithub').value = '';
-                document.getElementById('projLive').value = '';
-                document.getElementById('projIcon').value = '';
-            });
-            
-            document.getElementById('addSkillBtn')?.addEventListener('click', () => {
-                let newSkill = document.getElementById('newSkillInput').value.trim();
-                if(newSkill) {
-                    skillsData.push(newSkill);
-                    refreshSkillsEdit();
-                    saveAllData();
-                    renderSkills();
-                    document.getElementById('newSkillInput').value = '';
-                }
-            });
-            
-            document.getElementById('saveSkillsBtn')?.addEventListener('click', () => {
-                saveAllData();
-                renderSkills();
-                alert('✅ Skills saved!');
-            });
-            
-            document.getElementById('saveServicesBtn')?.addEventListener('click', () => {
-                for(let i=0; i<servicesData.length; i++) {
-                    let newIcon = document.getElementById(`sv_icon_${i}`)?.value;
-                    let newTitle = document.getElementById(`sv_title_${i}`)?.value;
-                    let newDesc = document.getElementById(`sv_desc_${i}`)?.value;
-                    if(newIcon && newIcon.trim()) servicesData[i].icon = newIcon.trim();
-                    if(newTitle && newTitle.trim()) servicesData[i].title = newTitle.trim();
-                    if(newDesc !== undefined) servicesData[i].desc = newDesc;
-                }
-                saveAllData();
-                renderServices();
-                alert('✅ Services updated!');
-            });
-            
-            refreshProjectList();
-            refreshSkillsEdit();
-            refreshServicesEdit();
-        }
-        
-        function initAdmin() {
-            createAdminStyles();
-            const modal = createAdminModal();
-            
-            function openModal() {
-                modal.classList.add('active');
-                if(isAdminLoggedIn) showAdminPanel();
-                else showAdminLogin();
-            }
-            
-            function closeModal() {
-                modal.classList.remove('active');
-            }
-            
-            // Close button event (delegation)
-            document.addEventListener('click', (e) => {
-                if(e.target.id === 'closeAdminModal' || e.target.closest('#closeAdminModal')) {
-                    closeModal();
-                }
-            });
-            modal.addEventListener('click', (e) => {
-                if(e.target === modal) closeModal();
-            });
-            
-            // Method 1: URL hash #admin
-            function checkHash() {
-                if(window.location.hash === '#admin') {
-                    openModal();
-                    window.location.hash = '';
-                }
-            }
-            checkHash();
-            window.addEventListener('hashchange', checkHash);
-            
-            // Method 2: Type 'admin' anywhere (secret code)
-            document.addEventListener('keydown', (e) => {
-                secretBuffer += e.key;
-                secretBuffer = secretBuffer.slice(-5);
-                if(secretBuffer.toLowerCase() === 'admin') {
-                    openModal();
-                    secretBuffer = '';
-                }
-            });
-            
-            // Method 3: Console command for devs
-            window.adminAccess = openModal;
-        }
-        
-        initAdmin();
-    })();
-
-    // Smooth scroll
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if(target) target.scrollIntoView({ behavior: 'smooth' });
+            };
         });
+    }
+    
+    function refreshSkillsEdit() {
+        let skillDiv = document.getElementById('skillList');
+        skillDiv.innerHTML = skillsData.map((s, i) => `
+            <span style="background:#1a1f2a;padding:0.3rem 0.8rem;border-radius:20px;display:inline-flex;align-items:center;gap:0.3rem">
+                ${s} <button class="delSkill" data-idx="${i}" style="background:none;border:none;color:#ff4d4d;cursor:pointer;font-size:1rem">✖</button>
+            </span>
+        `).join('');
+        document.querySelectorAll('.delSkill').forEach(btn => {
+            btn.onclick = () => { skillsData.splice(parseInt(btn.dataset.idx), 1); refreshSkillsEdit(); };
+        });
+    }
+    
+    function refreshServicesEdit() {
+        let servicesDiv = document.getElementById('servicesEditArea');
+        servicesDiv.innerHTML = servicesData.map((sv, i) => `
+            <div style="background:#1a1f2a;padding:0.8rem;border-radius:12px;margin-bottom:0.8rem">
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem">
+                    <input id="sv_icon_${i}" value="${sv.icon}" style="width:60px;padding:0.4rem;background:#0a0c0f;border:1px solid #333;border-radius:8px;color:white">
+                    <input id="sv_title_${i}" value="${sv.title}" style="flex:1;padding:0.4rem;background:#0a0c0f;border:1px solid #333;border-radius:8px;color:white">
+                    <button class="delService" data-idx="${i}" style="background:#ff4d4d;border:none;padding:0.3rem 0.8rem;border-radius:8px;cursor:pointer">Delete</button>
+                </div>
+                <textarea id="sv_desc_${i}" style="width:100%;padding:0.5rem;background:#0a0c0f;border:1px solid #333;border-radius:8px;color:white;resize:vertical">${sv.desc}</textarea>
+            </div>
+        `).join('');
+        document.querySelectorAll('.delService').forEach(btn => {
+            btn.onclick = () => { servicesData.splice(parseInt(btn.dataset.idx), 1); refreshServicesEdit(); };
+        });
+    }
+    
+    refreshProjectList();
+    refreshSkillsEdit();
+    refreshServicesEdit();
+    
+    document.getElementById('addProjBtn').onclick = () => {
+        let newProj = {
+            id: Date.now(),
+            title: document.getElementById('pTitle').value.trim() || "New Project",
+            desc: document.getElementById('pDesc').value.trim() || "Description",
+            tech: document.getElementById('pTech').value.split(',').map(t => t.trim()).filter(t => t),
+            github: document.getElementById('pGithub').value.trim() || "#",
+            icon: document.getElementById('pIcon').value.trim() || "🚀"
+        };
+        if(newProj.tech.length === 0) newProj.tech = ["New Tech"];
+        projectsData.push(newProj);
+        refreshProjectList();
+        document.getElementById('pTitle').value = '';
+        document.getElementById('pDesc').value = '';
+        document.getElementById('pTech').value = '';
+        document.getElementById('pGithub').value = '';
+        document.getElementById('pIcon').value = '';
+    };
+    
+    document.getElementById('addSkillBtn').onclick = () => {
+        let ns = document.getElementById('newSkill').value.trim();
+        if(ns) { skillsData.push(ns); refreshSkillsEdit(); document.getElementById('newSkill').value = ''; }
+    };
+    
+    document.getElementById('saveAllBtn').onclick = () => {
+        // Update services from inputs
+        for(let i = 0; i < servicesData.length; i++) {
+            let newIcon = document.getElementById(`sv_icon_${i}`)?.value;
+            let newTitle = document.getElementById(`sv_title_${i}`)?.value;
+            let newDesc = document.getElementById(`sv_desc_${i}`)?.value;
+            if(newIcon) servicesData[i].icon = newIcon;
+            if(newTitle) servicesData[i].title = newTitle;
+            if(newDesc !== undefined) servicesData[i].desc = newDesc;
+        }
+        saveData();
+        render();
+        alert('✅ All changes saved successfully!');
+    };
+    
+    document.getElementById('closeModal').onclick = () => modal.remove();
+}
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        let target = document.querySelector(this.getAttribute('href'));
+        if(target) target.scrollIntoView({ behavior: 'smooth' });
     });
+});
 </script>
 </body>
 </html>
