@@ -64,6 +64,8 @@
         .project-btn-live { background: linear-gradient(135deg, var(--cyan), var(--purple)); border: none; color: #0a0c0f; }
         .project-btn-live:hover { transform: translateY(-2px); box-shadow: 0 0 15px rgba(0,229,255,0.3); }
         footer { border-top: 1px solid var(--border); padding: 2rem; text-align: center; color: var(--text-sec); font-size: 0.75rem; }
+        .loading-toast { position: fixed; bottom: 20px; right: 20px; background: #1a1f2a; border: 1px solid #00e5ff; border-radius: 12px; padding: 0.8rem 1.2rem; z-index: 10001; font-size: 0.8rem; display: none; align-items: center; gap: 0.5rem; }
+        .loading-toast.show { display: flex; }
         @media (max-width: 768px) {
             .hero-grid { grid-template-columns: 1fr; text-align: center; }
             .hero-img { width: 180px; height: 180px; margin: 0 auto; }
@@ -75,6 +77,8 @@
     </style>
 </head>
 <body>
+
+<div id="loadingToast" class="loading-toast"><span>🔄</span><span id="toastMsg">Saving...</span></div>
 
 <canvas id="bgCanvas"></canvas>
 
@@ -151,21 +155,47 @@
 </footer>
 
 <script>
-// ==================== SECURE CREDENTIALS ====================
+// ==================== GITHUB CONFIGURATION ====================
+// 🔴🔴🔴 IMPORTANT: TERA TOKEN DAL DIYA HAI 🔴🔴🔴
+const GITHUB_TOKEN = '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';
+const GITHUB_USER = 'ayaanpirjade';
+const GITHUB_REPO = 'my-portfolio';
+const GITHUB_FILE_PATH = 'projects-data.json';
+const GITHUB_BRANCH = 'main';
+
+// Raw URL for reading (public access)
+const DATA_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${GITHUB_FILE_PATH}`;
+// API URL for updating
+const API_URL = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`;
+
+// ==================== SECURE CREDENTIALS FOR ADMIN LOGIN ====================
 const ADMIN_CRED = { user: btoa('iowncodz'), pass: btoa('AYAAN@#7866') };
 
 // ==================== GLOBAL DATA ====================
 let skillsData = [];
 let servicesData = [];
 let projectsData = [];
+let currentFileSha = null;
 
-// ==================== LOAD DATA FROM GITHUB JSON ====================
-// CHANGE THIS URL TO YOUR GITHUB JSON FILE URL
-const DATA_URL = 'https://raw.githubusercontent.com/ayaanpirjade/ayaanpirjade/main/projects-data.json';
+// ==================== SHOW TOAST NOTIFICATION ====================
+function showToast(msg, isError = false) {
+    const toast = document.getElementById('loadingToast');
+    const toastMsg = document.getElementById('toastMsg');
+    toastMsg.innerText = msg;
+    toast.style.display = 'flex';
+    toast.style.borderColor = isError ? '#ff4d4d' : '#00e5ff';
+    setTimeout(() => {
+        toast.style.display = 'none';
+        toast.style.borderColor = '#00e5ff';
+    }, 3000);
+}
 
+// ==================== LOAD DATA FROM GITHUB ====================
 async function loadDataFromGitHub() {
     try {
         console.log("Loading data from GitHub...");
+        showToast("Loading data from GitHub...");
+        
         const response = await fetch(DATA_URL);
         if (!response.ok) throw new Error('Failed to load data');
         const data = await response.json();
@@ -174,15 +204,92 @@ async function loadDataFromGitHub() {
         servicesData = data.services || [];
         projectsData = data.projects || [];
         
-        console.log("Data loaded successfully from GitHub");
+        console.log("Data loaded successfully");
+        showToast("Data loaded successfully!");
         render();
+        
+        await getFileSha();
         return true;
     } catch (error) {
         console.error("Error loading from GitHub:", error);
-        // Fallback to localStorage or default
+        showToast("Error loading data, using local cache", true);
         loadFromLocalStorage();
         return false;
     }
+}
+
+async function getFileSha() {
+    try {
+        const response = await fetch(API_URL, {
+            headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
+        });
+        if (response.ok) {
+            const data = await response.json();
+            currentFileSha = data.sha;
+            console.log("File SHA obtained:", currentFileSha);
+        }
+    } catch (error) {
+        console.error("Error getting file SHA:", error);
+    }
+}
+
+async function saveToGitHub() {
+    if (!GITHUB_TOKEN || GITHUB_TOKEN === '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') {
+        showToast("⚠️ GitHub token not configured! Changes saved only locally.", true);
+        saveToLocalStorage();
+        return false;
+    }
+    
+    showToast("Saving to GitHub...");
+    
+    const dataToSave = {
+        skills: skillsData,
+        services: servicesData,
+        projects: projectsData,
+        lastUpdated: new Date().toISOString()
+    };
+    
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(dataToSave, null, 2))));
+    
+    try {
+        const response = await fetch(API_URL, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${GITHUB_TOKEN}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/vnd.github.v3+json'
+            },
+            body: JSON.stringify({
+                message: "Update portfolio data via admin panel",
+                content: content,
+                sha: currentFileSha,
+                branch: GITHUB_BRANCH
+            })
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            currentFileSha = data.content.sha;
+            showToast("✅ Saved to GitHub! All visitors will see updates.");
+            console.log("Successfully saved to GitHub");
+            return true;
+        } else {
+            const error = await response.json();
+            throw new Error(error.message || "Failed to save");
+        }
+    } catch (error) {
+        console.error("Error saving to GitHub:", error);
+        showToast("❌ Failed to save to GitHub! Check token.", true);
+        saveToLocalStorage();
+        return false;
+    }
+}
+
+function saveToLocalStorage() {
+    localStorage.setItem('ayaan_skills', JSON.stringify(skillsData));
+    localStorage.setItem('ayaan_services', JSON.stringify(servicesData));
+    localStorage.setItem('ayaan_projects', JSON.stringify(projectsData));
+    showToast("💾 Saved to local storage only");
 }
 
 function loadFromLocalStorage() {
@@ -193,7 +300,6 @@ function loadFromLocalStorage() {
     if(sv) servicesData = JSON.parse(sv);
     if(p) projectsData = JSON.parse(p);
     
-    // Default data if nothing exists
     if(skillsData.length === 0) {
         skillsData = ["Python", "Networking & Linux", "Web Development", "SQL & Databases", "JavaScript", "Automation Scripting", "Cybersecurity Basics", "Penetration Testing", "API Integration", "Selenium", "Flask", "Burp Suite"];
     }
@@ -214,12 +320,6 @@ function loadFromLocalStorage() {
         ];
     }
     render();
-}
-
-function saveToLocalStorage() {
-    localStorage.setItem('ayaan_skills', JSON.stringify(skillsData));
-    localStorage.setItem('ayaan_services', JSON.stringify(servicesData));
-    localStorage.setItem('ayaan_projects', JSON.stringify(projectsData));
 }
 
 function render() {
@@ -309,34 +409,52 @@ function showPanel() {
     modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.96);z-index:10000;overflow:auto;display:flex;align-items:center;justify-content:center';
     modal.innerHTML = `<div style="background:linear-gradient(135deg,#111315,#0a0c0f);border:1px solid #00e5ff;border-radius:28px;padding:1.8rem;width:90%;max-width:680px;max-height:85vh;overflow:auto">
         <div style="display:flex;justify-content:space-between;margin-bottom:1rem"><h2 style="color:#00e5ff">🔧 CONTROL CENTER</h2><button id="closeModal" style="background:none;border:none;color:white;font-size:1.8rem;cursor:pointer">&times;</button></div>
-        <p style="color:#ffaa00;font-size:0.7rem;margin-bottom:1rem">⚠️ Changes save to LOCAL STORAGE only. To make global, update GitHub JSON file.</p>
+        <p style="color:#ffaa00;font-size:0.7rem;margin-bottom:1rem">🌍 Changes will be saved to GITHUB and visible to ALL visitors!</p>
         <h3>📦 ADD NEW PROJECT</h3>
         <input id="pTitle" placeholder="Title"><input id="pDesc" placeholder="Description"><input id="pTech" placeholder="Tech (comma)"><input id="pGithub" placeholder="GitHub Link"><input id="pLive" placeholder="Live Demo Link"><input id="pIcon" placeholder="Icon (emoji)">
         <button id="addProjBtn" style="background:#00e5ff;padding:0.6rem;width:100%;border-radius:10px;margin:0.5rem 0">+ ADD PROJECT</button>
         <h3>📋 MANAGE PROJECTS</h3><div id="projectList"></div>
         <h3>🎯 MANAGE SKILLS</h3><div id="skillList"></div><input id="newSkill" placeholder="New Skill"><button id="addSkillBtn">+ Add Skill</button>
         <h3>⚙️ MANAGE SERVICES</h3><div id="servicesEditArea"></div>
-        <button id="saveAllBtn" style="background:linear-gradient(135deg,#00e5ff,#b980ea);padding:0.8rem;width:100%;border-radius:12px;margin-top:1rem">💾 SAVE TO LOCAL STORAGE</button>
-        <p style="margin-top:1rem;font-size:0.65rem;color:#4a4f58">To make changes visible to everyone, copy the data and update your GitHub JSON file.</p>
+        <button id="saveAllBtn" style="background:linear-gradient(135deg,#00e5ff,#b980ea);padding:0.8rem;width:100%;border-radius:12px;margin-top:1rem">💾 SAVE TO GITHUB (Global)</button>
     </div>`;
     document.body.appendChild(modal);
     
-    function refreshLists() {
+    function refreshProjectList() {
         let listDiv = document.getElementById('projectList');
-        listDiv.innerHTML = projectsData.map((p, i) => `<div style="background:#1a1f2a;padding:0.5rem;margin:0.3rem 0;border-radius:8px"><div style="display:flex;justify-content:space-between"><span><strong>${p.title}</strong><br><small>${p.desc.substring(0,50)}</small></span><div><button class="editProj" data-idx="${i}">✏️ Edit</button><button class="delProj" data-idx="${i}">🗑️ Del</button></div></div></div>`).join('');
-        document.querySelectorAll('.delProj').forEach(btn => { btn.onclick = () => { projectsData.splice(parseInt(btn.dataset.idx),1); refreshLists(); saveToLocalStorage(); render(); alert('Deleted locally!'); }; });
-        document.querySelectorAll('.editProj').forEach(btn => { btn.onclick = () => { let i=parseInt(btn.dataset.idx); let p=projectsData[i]; p.title=prompt('Title',p.title)||p.title; p.desc=prompt('Desc',p.desc)||p.desc; p.tech=prompt('Tech (comma)',p.tech.join(',')).split(',').map(t=>t.trim()); p.github=prompt('GitHub',p.github)||p.github; p.live=prompt('Live Link',p.live)||p.live; refreshLists(); saveToLocalStorage(); render(); alert('Updated locally!'); }; });
+        listDiv.innerHTML = projectsData.map((p, i) => `<div style="background:#1a1f2a;padding:0.5rem;margin:0.3rem 0;border-radius:8px"><div style="display:flex;justify-content:space-between"><span><strong>${p.title}</strong><br><small>${p.desc.substring(0,50)}</small></span><div><button class="editProj" data-idx="${i}" style="background:#00e5ff;border:none;padding:0.2rem 0.6rem;border-radius:6px;margin-right:0.3rem">✏️ Edit</button><button class="delProj" data-idx="${i}" style="background:#ff4d4d;border:none;padding:0.2rem 0.6rem;border-radius:6px">🗑️ Del</button></div></div></div>`).join('');
+        document.querySelectorAll('.delProj').forEach(btn => { btn.onclick = async () => { if(confirm('Delete this project?')) { projectsData.splice(parseInt(btn.dataset.idx),1); refreshProjectList(); await saveToGitHub(); render(); } }; });
+        document.querySelectorAll('.editProj').forEach(btn => { btn.onclick = async () => { let i=parseInt(btn.dataset.idx); let p=projectsData[i]; p.title=prompt('Title',p.title)||p.title; p.desc=prompt('Desc',p.desc)||p.desc; p.tech=prompt('Tech (comma)',p.tech.join(',')).split(',').map(t=>t.trim()); p.github=prompt('GitHub',p.github)||p.github; p.live=prompt('Live Link',p.live)||p.live; refreshProjectList(); await saveToGitHub(); render(); }; });
+    }
+    
+    function refreshSkillsEdit() {
         let skillDiv = document.getElementById('skillList');
         skillDiv.innerHTML = skillsData.map((s,i) => `<span style="background:#1a1f2a;padding:0.3rem 0.8rem;margin:0.2rem;display:inline-block;border-radius:20px">${s} <button class="delSkill" data-idx="${i}" style="background:none;border:none;color:#ff4d4d">✖</button></span>`).join('');
-        document.querySelectorAll('.delSkill').forEach(btn => { btn.onclick = () => { skillsData.splice(parseInt(btn.dataset.idx),1); refreshLists(); saveToLocalStorage(); render(); }; });
-        let servicesDiv = document.getElementById('servicesEditArea');
-        servicesDiv.innerHTML = servicesData.map((sv,i) => `<div style="background:#1a1f2a;padding:0.5rem;margin:0.3rem 0;border-radius:8px"><input id="sv_icon_${i}" value="${sv.icon}" style="width:60px"><input id="sv_title_${i}" value="${sv.title}"><textarea id="sv_desc_${i}">${sv.desc}</textarea><button class="delService" data-idx="${i}">Delete</button></div>`).join('');
-        document.querySelectorAll('.delService').forEach(btn => { btn.onclick = () => { servicesData.splice(parseInt(btn.dataset.idx),1); refreshLists(); saveToLocalStorage(); render(); }; });
+        document.querySelectorAll('.delSkill').forEach(btn => { btn.onclick = async () => { skillsData.splice(parseInt(btn.dataset.idx),1); refreshSkillsEdit(); await saveToGitHub(); render(); }; });
     }
-    refreshLists();
-    document.getElementById('addProjBtn').onclick = () => { let newProj = { id:Date.now(), title:document.getElementById('pTitle').value.trim()||"New", desc:document.getElementById('pDesc').value.trim()||"Desc", tech:document.getElementById('pTech').value.split(',').map(t=>t.trim()), github:document.getElementById('pGithub').value.trim()||"#", live:document.getElementById('pLive').value.trim()||"#", icon:document.getElementById('pIcon').value.trim()||"🚀" }; projectsData.push(newProj); refreshLists(); saveToLocalStorage(); render(); alert('Added locally!'); };
-    document.getElementById('addSkillBtn').onclick = () => { let ns=document.getElementById('newSkill').value.trim(); if(ns){ skillsData.push(ns); refreshLists(); saveToLocalStorage(); render(); } };
-    document.getElementById('saveAllBtn').onclick = () => { for(let i=0;i<servicesData.length;i++){ let ic=document.getElementById(`sv_icon_${i}`)?.value; let ti=document.getElementById(`sv_title_${i}`)?.value; let de=document.getElementById(`sv_desc_${i}`)?.value; if(ic) servicesData[i].icon=ic; if(ti) servicesData[i].title=ti; if(de!==undefined) servicesData[i].desc=de; } saveToLocalStorage(); render(); alert('✅ Saved to localStorage! Copy data to GitHub JSON for global update.'); };
+    
+    function refreshServicesEdit() {
+        let servicesDiv = document.getElementById('servicesEditArea');
+        servicesDiv.innerHTML = servicesData.map((sv,i) => `<div style="background:#1a1f2a;padding:0.5rem;margin:0.3rem 0;border-radius:8px"><input id="sv_icon_${i}" value="${sv.icon}" style="width:60px"><input id="sv_title_${i}" value="${sv.title}"><textarea id="sv_desc_${i}">${sv.desc}</textarea><button class="delService" data-idx="${i}" style="background:#ff4d4d;border:none;padding:0.2rem 0.6rem;border-radius:6px">Delete</button></div>`).join('');
+        document.querySelectorAll('.delService').forEach(btn => { btn.onclick = async () => { servicesData.splice(parseInt(btn.dataset.idx),1); refreshServicesEdit(); await saveToGitHub(); render(); }; });
+    }
+    
+    refreshProjectList();
+    refreshSkillsEdit();
+    refreshServicesEdit();
+    
+    document.getElementById('addProjBtn').onclick = async () => {
+        let newProj = { id:Date.now(), title:document.getElementById('pTitle').value.trim()||"New", desc:document.getElementById('pDesc').value.trim()||"Desc", tech:document.getElementById('pTech').value.split(',').map(t=>t.trim()), github:document.getElementById('pGithub').value.trim()||"#", live:document.getElementById('pLive').value.trim()||"#", icon:document.getElementById('pIcon').value.trim()||"🚀" };
+        projectsData.push(newProj); refreshProjectList(); await saveToGitHub(); render();
+        document.getElementById('pTitle').value=''; document.getElementById('pDesc').value=''; document.getElementById('pTech').value=''; document.getElementById('pGithub').value=''; document.getElementById('pLive').value=''; document.getElementById('pIcon').value='';
+    };
+    
+    document.getElementById('addSkillBtn').onclick = async () => { let ns=document.getElementById('newSkill').value.trim(); if(ns){ skillsData.push(ns); refreshSkillsEdit(); await saveToGitHub(); render(); document.getElementById('newSkill').value=''; } };
+    
+    document.getElementById('saveAllBtn').onclick = async () => {
+        for(let i=0;i<servicesData.length;i++){ let ic=document.getElementById(`sv_icon_${i}`)?.value; let ti=document.getElementById(`sv_title_${i}`)?.value; let de=document.getElementById(`sv_desc_${i}`)?.value; if(ic) servicesData[i].icon=ic; if(ti) servicesData[i].title=ti; if(de!==undefined) servicesData[i].desc=de; }
+        await saveToGitHub(); render();
+    };
     document.getElementById('closeModal').onclick = () => modal.remove();
 }
 
