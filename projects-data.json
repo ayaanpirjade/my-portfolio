@@ -1,0 +1,20 @@
+{
+  "skills": [
+    "Python", "Networking & Linux", "Web Development", "SQL & Databases",
+    "JavaScript", "Automation Scripting", "Cybersecurity Basics",
+    "Penetration Testing", "API Integration", "Selenium", "Flask", "Burp Suite"
+  ],
+  "services": [
+    { "icon": "🤖", "title": "Web Automation", "desc": "Scraping, bots, and workflow automation using Python & Selenium." },
+    { "icon": "🔒", "title": "Security Auditing", "desc": "Vulnerability assessments and security best practices." },
+    { "icon": "📱", "title": "Instagram Tools", "desc": "Automation tools for engagement, scraping, and analytics." },
+    { "icon": "🕸️", "title": "Full Stack Web", "desc": "Interactive websites with modern frontend & backend." },
+    { "icon": "🎮", "title": "Game Dev", "desc": "Building small games with Pygame and JavaScript." },
+    { "icon": "⚙️", "title": "API Integration", "desc": "Connecting services and building custom APIs." }
+  ],
+  "projects": [
+    { "id": 1, "title": "NCERTPadhlo", "desc": "Free NCERT Solutions for Class 6-12. 5000+ exercises, 40+ subjects, step-by-step answers, PDF downloads, Hindi & English medium.", "tech": ["HTML", "CSS", "JavaScript", "Responsive Design"], "github": "https://github.com/ayaanpirjade/NCERTPadhlo", "live": "https://ayaanpirjade.github.io/NCERTPadhlo/", "icon": "📚" },
+    { "id": 2, "title": "Instagram Automation Suite", "desc": "Automated engagement, content scheduling, and analytics tool.", "tech": ["Python", "Selenium", "Instagrapi"], "github": "https://github.com/ayaanpirjade", "live": "https://instagram.com", "icon": "📸" },
+    { "id": 3, "title": "YouTube Automation Hub", "desc": "Tools to automate video metadata and channel management.", "tech": ["Python", "YouTube API"], "github": "https://github.com/ayaanpirjade", "live": "#", "icon": "📺" }
+  ]
+}
